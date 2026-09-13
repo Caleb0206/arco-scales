@@ -45,3 +45,30 @@ p {
   margin: 0;
   font-size: 1.1rem;
 }
+
+.site-header {
+  border-bottom: 1rem solid #ddd8cf;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+
+}
+
+.nav-item {
+  color: #4a4742;
+  font-size: 1rem;
+  text-decoration: underline;
+}
+
+.nav-item:hover,
+.nav-item:focus {
+  color: #1100ff;
+  text-decoration: underline;
+}
