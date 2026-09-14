@@ -1,16 +1,7 @@
 @import "tailwindcss";
 @import "./tokens.css";
 
-@theme inline {
-  --color-background: var(--md-sys-color-background);
-  --color-foreground: var(--md-sys-color-on-background);
-  --color-primary: var(--md-sys-color-primary);
-  --color-secondary: var(--md-sys-color-secondary);
-  --color-tertiary: var(--md-sys-color-tertiary);
-
-  --font-sans: var(--font-body);
-  --font-heading: var(--font-heading);
-}
+/* Default Mobile Layout */
 
 * {
   box-sizing: border-box;
@@ -57,8 +48,8 @@ p {
 
 .site-nav {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: column;
+  align-items: flex-start;
   gap: var(--space-4);
   max-width: 60rem;
   margin: var(--space-0) auto;
@@ -77,21 +68,21 @@ p {
   text-decoration: underline;
 }
 
-/* Home-page cards */
+/* Home-page cards - default mobile */
 
 .card-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--space-4);
 }
 
 .card {
   display: flex;
-  flex: 1 1 12rem;
+  flex: 1 1 auto;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 15rem;
-  padding: var(--space-5);
+  min-height: 5rem;
+  padding: var(--space-4);
   border: var(--border-1) solid var(--md-sys-color-outline-variant);
   border-radius: var(--radius-2);
   background: var(--md-sys-color-surface-container-lowest);
@@ -126,13 +117,67 @@ p {
   margin-bottom: var(--space-2);
 }
 
-@media (max-width: 40rem) {
+/* Practice Page */
+.practice-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border: var(--border-1) solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-2);
+  background: var(--md-sys-color-surface-container-low);
+}
+
+.selector-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.selector-field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-body);
+}
+
+.selector-field select {
+  width: 100%;
+  min-height: 2rem;
+  padding: var(--space-2);
+  border: var(--border-1) solid var(--md-sys-color-outline);
+  border-radius: var(--radius-1);
+  background: var(--md-sys-color-surface-container-lowest);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-body);
+}
+
+.selector-field select:focus-visible {
+  outline: 0.2rem solid var(--md-sys-color-tertiary);
+}
+
+@media only screen and (min-width: 40rem) {
   .site-nav {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .card-row {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .card {
-    flex-basis: 100%;
+    flex: 1 1 12rem;
+    flex-wrap: wrap;
+    padding: var(--space-5);
+    min-height: 12rem;
+  }
+
+  .selector-controls {
+    flex-direction: row;
   }
 }
