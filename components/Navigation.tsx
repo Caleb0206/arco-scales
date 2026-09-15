@@ -7,6 +7,7 @@ export default function Navigation() {
                 <Link className="nav-item" href="/">Arco Scales </Link>
                 <Link className="nav-item" href="/practice">Practice</Link>
                 <Link className="nav-item" href="/scales">Scale Library</Link>
+                <Link className="nav-item" href="/plans">Plans</Link>
                 <Link className="nav-item" href="/progress">Progress</Link>
             </nav>
         </header>

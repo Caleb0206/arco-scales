@@ -326,7 +326,6 @@ p {
 }
 
 .complete-button {
-
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -339,6 +338,16 @@ p {
   font-weight: 900;
   cursor: pointer;
 }
+
+/* Plans page */
+
+.plans-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2)
+}
+
+
 
 /* Progress */
 .progress-cards {
@@ -396,5 +405,10 @@ p {
 
   .progress-cards {
     display: flex;
+  }
+
+
+  .plans-list {
+    flex-direction: row;
   }
 }
