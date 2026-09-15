@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 type ScaleType = "major" | "minor";
 
@@ -58,16 +59,23 @@ export default function Scales() {
 
                     <ul className="scale-library-list">
                         {visibleScales.map((scale) => (
-                            <li className="scale-library-row" key={scale.name}>
-                                <span className="scale-name">{scale.name}</span>
-
-                                <span
-                                    className={
-                                        scale.hasPracticed ? "practice-status is-practiced" : "practice-status"
-                                    }
+                            <li key={scale.name}>
+                                <Link
+                                    className="scale-library-row"
+                                    href={`/practice`}
                                 >
-                                    {scale.hasPracticed ? "Practiced" : "Not practiced"}
-                                </span>
+
+
+                                    <span className="scale-name">{scale.name}</span>
+
+                                    <span
+                                        className={
+                                            scale.hasPracticed ? "practice-status is-practiced" : "practice-status"
+                                        }
+                                    >
+                                        {scale.hasPracticed ? "Practiced" : "Not practiced"}
+                                    </span>
+                                </Link>
                             </li>
                         ))}
                     </ul>

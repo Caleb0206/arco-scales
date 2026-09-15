@@ -36,11 +36,15 @@ export default function Practice() {
                 <div
                     id="fingering-diagram"
                     className={`diagram-panel ${isDiagramOpen ? "is-open" : ""}`}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="fingering-diagram-heading"
                 >
-                    <button className="diagram-close-button"
+                    <button
+                        className="diagram-close-button"
                         type="button"
                         value="cancel"
-                        aria-label="Close"
+                        aria-label="Close diagram"
                         onClick={() => setIsDiagramOpen(false)}
                     >
                         ✕

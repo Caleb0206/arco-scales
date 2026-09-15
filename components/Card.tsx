@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 type CardProps = {
     title: string;
     children: ReactNode;
-    href: string;
+    href?: string;
 };
 
 export default function Card({
@@ -12,11 +12,25 @@ export default function Card({
     children,
     href,
 }: CardProps) {
-    return (
-        <Link className="card" href={href}>
+    const content = (
+        <>
             <h2>{title}</h2>
             <div className="card-content">{children}</div>
 
-        </Link>
+        </>
+    );
+
+    // If card is clickable
+    if (href) {
+        return (
+            <Link className="card card-link" href={href}>
+                {content}
+            </Link>
+        );
+    }
+
+    // Card is not interactable
+    return (
+        <div className="card">{content}</div>
     );
 }
