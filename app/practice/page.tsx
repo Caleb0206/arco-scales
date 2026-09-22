@@ -14,13 +14,8 @@ export default function Practice() {
     return (
         <div>
             <main className={styles.practiceWorkspace}>
-                <h1>Practice</h1>
-                <h2>Let's start!</h2>
-                <div className={styles.practiceTools}>
-                    <ScaleSelector />
-                    <KeySignatureInfo />
-                    <Metronome />
-
+                <div className={styles.practiceHeader}>
+                    <h1>Practice</h1>
                     <button
                         className={styles.diagramOpenButton}
                         type="button"
@@ -30,27 +25,36 @@ export default function Practice() {
                     >
                         View Fingering Diagram
                     </button>
+                </div>
+
+                <div className={styles.practiceTools}>
+                    <ScaleSelector />
+                    <KeySignatureInfo />
+                    <Metronome />
+                </div>
+                <div className={styles.practiceRightPanel}>
+                    <div
+                        id="fingering-diagram"
+                        className={`${styles.diagramPanel} ${isDiagramOpen ? styles.isOpen : ""}`}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="fingering-diagram-heading"
+                    >
+                        <button
+                            className={styles.diagramCloseButton}
+                            type="button"
+                            value="cancel"
+                            aria-label="Close diagram"
+                            onClick={() => setIsDiagramOpen(false)}
+                        >
+                            ✕
+                        </button>
+                        <FingeringDiagram />
+
+                    </div>
                     <CompleteButton />
                 </div>
 
-                <div
-                    id="fingering-diagram"
-                    className={`${styles.diagramPanel} ${isDiagramOpen ? styles.isOpen : ""}`}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="fingering-diagram-heading"
-                >
-                    <button
-                        className={styles.diagramCloseButton}
-                        type="button"
-                        value="cancel"
-                        aria-label="Close diagram"
-                        onClick={() => setIsDiagramOpen(false)}
-                    >
-                        ✕
-                    </button>
-                    <FingeringDiagram />
-                </div>
             </main>
         </div>
     );

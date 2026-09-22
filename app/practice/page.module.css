@@ -1,9 +1,34 @@
 /* Practice Page */
+.practiceWorkspace {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.practiceWorkspace>h1 {
+    margin: var(--space-0);
+}
+
+.practiceHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.practiceHeader>h2 {
+    margin: var(--space-0);
+}
+
+.practiceRightPanel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .practiceSelector {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
-    padding: var(--space-5);
+    padding: var(--space-2) var(--space-4);
     border: var(--border-1) solid var(--md-sys-color-outline-variant);
     border-radius: var(--radius-2);
     background: var(--md-sys-color-surface-container-low);
@@ -12,7 +37,7 @@
 .selectorControls {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-2);
 }
 
 .selectorField {
@@ -43,7 +68,7 @@
 .keySigInfo {
     display: grid;
     gap: var(--space-2);
-    margin-top: var(--space-5);
+    margin-top: var(--space-1);
     padding: var(--space-3);
     border: var(--border-1) solid var(--md-sys-color-outline-variant);
     border-radius: var(--radius-2);
@@ -62,7 +87,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    gap: var(--space-5);
+    gap: var(--space-2);
     padding: var(--space-3);
     border: var(--border-1) solid var(--md-sys-color-outline-variant);
     border-radius: var(--radius-2);
@@ -104,10 +129,6 @@
 }
 
 /* Fingering Diagram */
-.practiceWorkspace {
-    display: grid;
-    gap: var(--space-5);
-}
 
 .practiceTools {
     display: grid;
@@ -158,8 +179,8 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-
-    padding: var(--space-2) var(--space-3);
+    margin-top: var(--space-2);
+    padding: var(--space-4) var(--space-4);
     border-radius: var(--radius-2);
     border: 1px solid var(--md-sys-color-outline);
     background: var(--md-sys-color-tertiary-fixed-dim);
@@ -168,7 +189,32 @@
     cursor: pointer;
 }
 
+@media only screen and (max-width: 39.99rem) {
+    .practiceWorkspace {
+        gap: var(--space-3);
+    }
+
+    .practiceTools {
+        gap: var(--space-3);
+    }
+
+    .practiceHeader {
+        gap: var(--space-2);
+    }
+}
+
 @media only screen and (min-width: 40rem) {
+
+    .practiceWorkspace>h1,
+    .practiceHeader {
+        grid-column: 1 / -1;
+    }
+
+    .practiceWorkspace {
+        grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+        align-items: start;
+    }
+
     .selectorControls {
         flex-direction: row;
     }
@@ -185,10 +231,6 @@
     }
 
 
-    .practiceWorkspace {
-        grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
-        align-items: start;
-    }
 
     .diagramOpenButton,
     .diagramCloseButton {

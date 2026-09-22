@@ -237,60 +237,9 @@ p {
     flex-direction: row;
   }
 
-  .metronome-controls {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .metronome-beat {
-    min-height: 5rem;
-
-  }
-
-  .practice-workspace {
-    grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
-    align-items: start;
-  }
-
-  .diagram-open-button,
-  .diagram-close-button {
-    display: none;
-  }
-
-  .diagram-panel {
-    display: block;
-  }
-
   .progress-cards {
     display: flex;
   }
 
-  .plan-workspace {
-    grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
-    align-items: start;
-    gap: var(--space-4);
-    margin-top: var(--space-5);
-    padding: var(--space-5);
-    border: 1px solid var(--md-sys-color-outline-variant);
-    border-radius: var(--radius-2);
-    background: var(--md-sys-color-surface-container-lowest);
-  }
 
-  .plan-selector {
-    display: none;
-  }
-
-  .plan-content {
-    margin-top: var(--space-0);
-  }
-
-  .plan-list {
-    display: grid;
-    gap: var(--space-2);
-    padding: var(--space-5);
-    border: 1px solid var(--md-sys-color-outline-variant);
-    border-radius: var(--radius-2);
-    background: var(--md-sys-color-surface-container-lowest);
-  }
 }

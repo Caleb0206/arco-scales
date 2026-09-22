@@ -27,17 +27,6 @@ export default function ScaleSelector() {
 
     return (
         <section className={styles.practiceSelector} aria-labelledby="current-scale-heading">
-
-            <div className={styles.currentScaleDisplay}>
-                <p id="current-scale-heading" className={styles.currentScaleLabel}>
-                    Current Scale
-                </p>
-                <p className={styles.currentScaleValue}>
-                    {selectedScale} - {selectedOctaves}{" "}
-                    {selectedOctaves === 1 ? "octave" : "octaves"}
-                </p>
-
-            </div>
             <div className={styles.selectorControls}>
                 <label className={styles.selectorField} htmlFor="scale">
                     Scale
