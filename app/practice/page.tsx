@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-
+import styles from "./page.module.css";
 
 import ScaleSelector from "@/components/practice/ScaleSelector";
 import KeySignatureInfo from "@/components/practice/KeySignatureInfo";
@@ -13,16 +13,16 @@ export default function Practice() {
 
     return (
         <div>
-            <main className="practice-workspace">
+            <main className={styles.practiceWorkspace}>
                 <h1>Practice</h1>
                 <h2>Let's start!</h2>
-                <div className="practice-tools">
+                <div className={styles.practiceTools}>
                     <ScaleSelector />
                     <KeySignatureInfo />
                     <Metronome />
 
                     <button
-                        className="diagram-open-button"
+                        className={styles.diagramOpenButton}
                         type="button"
                         aria-expanded={isDiagramOpen}
                         aria-controls="fingering-diagram"
@@ -35,13 +35,13 @@ export default function Practice() {
 
                 <div
                     id="fingering-diagram"
-                    className={`diagram-panel ${isDiagramOpen ? "is-open" : ""}`}
+                    className={`${styles.diagramPanel} ${isDiagramOpen ? styles.isOpen : ""}`}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="fingering-diagram-heading"
                 >
                     <button
-                        className="diagram-close-button"
+                        className={styles.diagramCloseButton}
                         type="button"
                         value="cancel"
                         aria-label="Close diagram"

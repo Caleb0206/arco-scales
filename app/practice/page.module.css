@@ -1,0 +1,201 @@
+/* Practice Page */
+.practiceSelector {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding: var(--space-5);
+    border: var(--border-1) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--radius-2);
+    background: var(--md-sys-color-surface-container-low);
+}
+
+.selectorControls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.selectorField {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-2);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--font-body);
+}
+
+.selectorField select {
+    width: 100%;
+    min-height: 2rem;
+    padding: var(--space-2);
+    border: var(--border-1) solid var(--md-sys-color-outline);
+    border-radius: var(--radius-1);
+    background: var(--md-sys-color-surface-container-lowest);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--font-body);
+}
+
+.selectorField select:focus-visible {
+    outline: 0.2rem solid var(--md-sys-color-tertiary);
+}
+
+/* Key signature info */
+.keySigInfo {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+    padding: var(--space-3);
+    border: var(--border-1) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--radius-2);
+    background: var(--md-sys-color-surface-container-lowest);
+}
+
+.keySigImage {
+    width: 100%;
+    height: auto;
+    border: var(--border-1) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--radius-1);
+}
+
+/* Metronome */
+.metronome {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: var(--space-5);
+    padding: var(--space-3);
+    border: var(--border-1) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--radius-2);
+    background: var(--md-sys-color-surface-container-lowest);
+}
+
+.metronomeControls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.metronomeBeat,
+.metronomeControls .selectorField {
+    flex: 1;
+}
+
+.metronomeBeat {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-4);
+    min-width: 5rem;
+    background: var(--md-sys-color-secondary-container);
+    border: var(--border-1) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--radius-2);
+}
+
+.metronome input {
+    padding: var(--space-2);
+    border-radius: var(--radius-1);
+    border: var(--border-1) solid var(--md-sys-color-outline);
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--font-body);
+}
+
+.metronome input:focus {
+    outline: 2px solid var(--md-sys-color-primary);
+}
+
+/* Fingering Diagram */
+.practiceWorkspace {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.practiceTools {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.diagramOpenButton,
+.diagramCloseButton {
+    padding: var(--space-3) var(--space-4);
+    border: var(--border-1) solid var(--md-sys-color-on-primary);
+    border-radius: var(--radius-1);
+    background: var(--md-sys-color-tertiary);
+    color: var(--md-sys-color-on-tertiary);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.diagramPanel {
+    display: none;
+}
+
+.diagramPanel.isOpen {
+    position: fixed;
+    z-index: 10;
+    inset: var(--space-0);
+    display: grid;
+    align-content: start;
+    overflow-y: auto;
+    background: var(--md-sys-color-background);
+    padding: var(--space-4);
+}
+
+.diagramCloseButton {
+    justify-self: end;
+}
+
+.fingeringDiagram {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    border: var(--border-1) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--radius-2);
+    background-color: var(--md-sys-color-surface-container-lowest);
+}
+
+.completeButton {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-2);
+    border: 1px solid var(--md-sys-color-outline);
+    background: var(--md-sys-color-tertiary-fixed-dim);
+    color: var(--md-sys-color-on-tertiary-fixed);
+    font-weight: 900;
+    cursor: pointer;
+}
+
+@media only screen and (min-width: 40rem) {
+    .selectorControls {
+        flex-direction: row;
+    }
+
+    .metronomeControls {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .metronomeBeat {
+        min-height: 5rem;
+
+    }
+
+
+    .practiceWorkspace {
+        grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+        align-items: start;
+    }
+
+    .diagramOpenButton,
+    .diagramCloseButton {
+        display: none;
+    }
+
+    .diagramPanel {
+        display: block;
+    }
+}

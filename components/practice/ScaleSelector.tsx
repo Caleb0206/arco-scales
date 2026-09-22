@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import styles from "../../app/practice/page.module.css";
+
 
 const scaleOptions = [
     "A Major",
@@ -24,20 +26,20 @@ export default function ScaleSelector() {
     const [selectedOctaves, setSelectedOctaves] = useState(2);
 
     return (
-        <section className="practice-selector" aria-labelledby="current-scale-heading">
+        <section className={styles.practiceSelector} aria-labelledby="current-scale-heading">
 
-            <div className="current-scale-display">
-                <p id="current-scale-heading" className="current-scale-label">
+            <div className={styles.currentScaleDisplay}>
+                <p id="current-scale-heading" className={styles.currentScaleLabel}>
                     Current Scale
                 </p>
-                <p className="current-scale-value">
+                <p className={styles.currentScaleValue}>
                     {selectedScale} - {selectedOctaves}{" "}
                     {selectedOctaves === 1 ? "octave" : "octaves"}
                 </p>
 
             </div>
-            <div className="selector-controls">
-                <label className="selector-field" htmlFor="scale">
+            <div className={styles.selectorControls}>
+                <label className={styles.selectorField} htmlFor="scale">
                     Scale
                     <select id="scale" value={selectedScale} onChange={(event) => setSelectedScale(event.target.value)}>
                         {scaleOptions.map((scale) => (
@@ -47,7 +49,7 @@ export default function ScaleSelector() {
                         ))}
                     </select>
                 </label>
-                <label className="selector-field" htmlFor="octaves">
+                <label className={styles.selectorField} htmlFor="octaves">
                     Octaves
                     <select
                         id="octaves"
@@ -62,6 +64,6 @@ export default function ScaleSelector() {
                     </select>
                 </label>
             </div>
-        </section>
+        </section >
     );
 }

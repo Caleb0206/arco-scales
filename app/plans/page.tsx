@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Card from "@/components/Card";
+import styles from "./page.module.css";
 
 type Plan = {
     id: string;
@@ -39,16 +39,16 @@ export default function Plans() {
                     Plans
                 </h1>
 
-                <div className="plans-workspace">
-                    <nav className="plan-list">
-                        <h2>Plans</h2>
+                <div className={styles.planWorkspace}>
+                    <nav className={styles.planList}>
+
 
                         {plans.map((plan) => (
                             <button
                                 className={
                                     plan.id === selectedPlanId
-                                        ? "plan-list-item is-selected"
-                                        : "plan-list-item"
+                                        ? `${styles.planListItem} ${styles.isSelected}`
+                                        : styles.planListItem
                                 }
                                 type="button"
                                 key={plan.id}
@@ -60,9 +60,9 @@ export default function Plans() {
                         ))}
                     </nav>
 
-                    <div className="plan-details">
-                        <label className="plan-selector" htmlFor="plan">
-                            Choose a plan
+                    <div>
+                        <label className={styles.planSelector} htmlFor="plan">
+                            <h2>Choose a plan</h2>
                             <select
                                 id="plan"
                                 value={selectedPlanId}
@@ -76,7 +76,7 @@ export default function Plans() {
                             </select>
                         </label>
 
-                        <section className="plan-content">
+                        <section className={styles.planContent}>
                             <h2 id="plan-title">{selectedPlan.name}</h2>
                             <p>{selectedPlan.description}</p>
                             <h3> Scales in this plan</h3>

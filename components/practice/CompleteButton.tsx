@@ -1,11 +1,12 @@
+import styles from "../../app/practice/page.module.css";
 
 export default function CompleteButton() {
     return (
         <button
             type="button"
-            className="complete-button"
+            className={styles.completeButton}
         >
-            √
+            √ Mark completed
         </button>
     );
 }

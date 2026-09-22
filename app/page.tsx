@@ -20,7 +20,7 @@ export default function Home() {
           </Card>
           <Card
             title="Lesson Plans"
-            href="/"
+            href="/plans"
           >
             <p>Follow a guided scale-practice.</p>
           </Card>

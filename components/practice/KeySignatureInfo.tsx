@@ -1,3 +1,5 @@
+import styles from "../../app/practice/page.module.css";
+
 const scaleOptions = [
     "A Major",
     "B Major",
@@ -18,9 +20,9 @@ const placeholderImage = "https://placehold.co/400x100";
 export default function KeySignatureInfo() {
 
     return (
-        <section className="key-sig-info">
+        <section className={styles.keySigInfo}>
             <h2>Key Signature</h2>
-            <img className="key-sig-image" src={placeholderImage} alt="Key signature image" />
+            <img className={styles.keySigImage} src={placeholderImage} alt="Key signature image" />
 
             <p>Notes: </p>
         </section>
