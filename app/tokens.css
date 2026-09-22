@@ -1,24 +1,24 @@
 :root {
-    --font-body: "Inter", sans-serif;
-    --font-heading: "Chelsea Market";
+  --font-body: "Inter", sans-serif;
+  --font-heading: "Chelsea Market";
 
-    /* spacing scale */
-    --space-0: 0;
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.5rem;
-    --space-6: 2rem;
-    --space-7: 3rem;
+  /* spacing scale */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
 
-    /* radius tokens */
-    --radius-1: 0.5rem;
-    --radius-2: 1rem;
+  /* radius tokens */
+  --radius-1: 0.5rem;
+  --radius-2: 1rem;
 
-    /* border width tokens */
-    --border-1: 0.1rem;
-    --border-2: 0.5rem;
+  /* border width tokens */
+  --border-1: 0.1rem;
+  --border-2: 0.5rem;
 }
 
 .light {
@@ -82,6 +82,13 @@
   --md-sys-color-surface-container: rgb(246 236 231);
   --md-sys-color-surface-container-high: rgb(240 230 225);
   --md-sys-color-surface-container-highest: rgb(234 224 219);
+
+  --status-recent-container: rgb(207 239 216);
+  --on-status-recent-container: rgb(20 91 46);
+
+  --status-due-soon-container: rgb(255 224 178);
+  --on-status-due-soon-container: rgb(112 55 0);
+
 }
 
 .dark {
@@ -145,4 +152,10 @@
   --md-sys-color-surface-container: rgb(39 32 30);
   --md-sys-color-surface-container-high: rgb(49 41 38);
   --md-sys-color-surface-container-highest: rgb(60 52 49);
+
+  --status-recent-container: rgb(18 74 40);
+  --on-status-recent-container: rgb(181 242 196);
+
+  --status-due-soon-container: rgb(97 58 0);
+  --on-status-due-soon-container: rgb(255 215 160);
 }
