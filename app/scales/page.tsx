@@ -46,7 +46,14 @@ export default function Scales() {
             hard: true,
         });
 
-    const visibleScales = scales.filter((scale) => selectedTypes[scale.type]);
+    const visibleScales = scales.filter((scale) => {
+        const difficulty = getDifficulty(scale.accidentalCount);
+
+        return (
+            selectedTypes[scale.type] &&
+            selectedDifficulties[difficulty]
+        );
+    });
 
     function handleTypeChange(type: ScaleType, checked: boolean) {
         setSelectedTypes((currentTypes) => ({

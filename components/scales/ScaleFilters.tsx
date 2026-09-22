@@ -25,7 +25,7 @@ export default function ScaleFilters({
     onSelectAll,
 }: ScaleFiltersProp) {
     const allTypesSelected = selectedTypes.major && selectedTypes.minor;
-
+    
 
     return (
         <div className={styles.scaleFilters}>
