@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ScaleFilters, {
     type ScaleType,
-    type Difficulty,
+    type NumAccidentals,
 } from "@/components/scales/ScaleFilters";
 import styles from "./page.module.css";
 
@@ -40,10 +40,10 @@ export default function Scales() {
         major: true,
         minor: true,
     });
-    const [selectedDifficulties, setSelectedDifficulties] =
-        useState<Record<Difficulty, boolean>>({
-            easy: true,
-            hard: true,
+    const [selectedAccidentals, setSelectedAccidentals] =
+        useState<Record<NumAccidentals, boolean>>({
+            upTo2: true,
+            threeOrMore: true,
         });
 
     const visibleScales = scales.filter((scale) => {
@@ -51,7 +51,7 @@ export default function Scales() {
 
         return (
             selectedTypes[scale.type] &&
-            selectedDifficulties[difficulty]
+            selectedAccidentals[difficulty]
         );
     });
 
@@ -62,13 +62,13 @@ export default function Scales() {
         }));
     }
 
-    function handleDifficultyChange(
-        difficulty: Difficulty,
+    function handleAccidentalChange(
+        accidentals: NumAccidentals,
         checked: boolean
     ) {
-        setSelectedDifficulties((currentDifficulties) => ({
-            ...currentDifficulties,
-            [difficulty]: checked,
+        setSelectedAccidentals((currentAccidentals) => ({
+            ...currentAccidentals,
+            [accidentals]: checked,
         }));
     }
 
@@ -89,12 +89,11 @@ export default function Scales() {
             today.getDate()
         );
 
-        // return ????
         return Math.floor((todayStart - practicedDay) / 86_400_000);
     }
 
-    function getDifficulty(accidentalCount: number) {
-        return accidentalCount <= 2 ? "easy" : "hard";
+    function getDifficulty(accidentalCount: number): NumAccidentals {
+        return accidentalCount <= 2 ? "upTo2" : "threeOrMore";
     }
 
     function getPracticeStatus(lastPracticed: string | null) {
@@ -134,9 +133,9 @@ export default function Scales() {
 
                     <ScaleFilters
                         selectedTypes={selectedTypes}
-                        selectedDifficulties={selectedDifficulties}
+                        selectedAccidentals={selectedAccidentals}
                         onTypeChange={handleTypeChange}
-                        onDifficultyChange={handleDifficultyChange}
+                        onAccidentalChange={handleAccidentalChange}
                         onSelectAll={handleSelectAll}
                     />
 

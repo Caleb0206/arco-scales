@@ -1,17 +1,17 @@
 import styles from "@/app/scales/page.module.css";
 
 export type ScaleType = "major" | "minor";
-export type Difficulty = "easy" | "hard";
+export type NumAccidentals = "upTo2" | "threeOrMore";
 
 type SelectedTypes = Record<ScaleType, boolean>;
-type SelectedDifficulty = Record<Difficulty, boolean>;
+type SelectedAccidentals = Record<NumAccidentals, boolean>;
 
 
 type ScaleFiltersProp = {
     selectedTypes: SelectedTypes;
-    selectedDifficulties: SelectedDifficulty;
+    selectedAccidentals: SelectedAccidentals;
     onTypeChange: (type: ScaleType, checked: boolean) => void;
-    onDifficultyChange: (difficulty: Difficulty, checked: boolean) => void;
+    onAccidentalChange: (accidentals: NumAccidentals, checked: boolean) => void;
 
     onSelectAll: (checked: boolean) => void;
 }
@@ -19,13 +19,13 @@ type ScaleFiltersProp = {
 
 export default function ScaleFilters({
     selectedTypes,
-    selectedDifficulties,
+    selectedAccidentals,
     onTypeChange,
-    onDifficultyChange,
+    onAccidentalChange,
     onSelectAll,
 }: ScaleFiltersProp) {
     const allTypesSelected = selectedTypes.major && selectedTypes.minor;
-    
+
 
     return (
         <div className={styles.scaleFilters}>
@@ -68,36 +68,35 @@ export default function ScaleFilters({
                 </div>
 
                 <div className={styles.filterGroup}>
-                    <p className={styles.filterGroupLabel}>Difficulty</p>
+                    <p className={styles.filterGroupLabel}>
+                        Accidentals
+                    </p>
 
-
-                    <label className={styles.checkboxFilter} htmlFor="easy-filter">
+                    <label className={styles.checkboxFilter} htmlFor="up-to-2-filter">
                         <input
-                            id="easy-filter"
+                            id="up-to-2-filter"
                             type="checkbox"
-                            checked={selectedDifficulties.easy}
+                            checked={selectedAccidentals.upTo2}
                             onChange={(event) =>
-                                onDifficultyChange("easy", event.target.checked)
+                                onAccidentalChange("upTo2", event.target.checked)
                             }
                         />
-                        Easy
+                        0 - 2
                     </label>
 
-                    <label className={styles.checkboxFilter} htmlFor="hard-filter">
+                    <label className={styles.checkboxFilter} htmlFor="3-plus-filter">
                         <input
-                            id="hard-filter"
+                            id="3-plus-filter"
                             type="checkbox"
-                            checked={selectedDifficulties.hard}
+                            checked={selectedAccidentals.threeOrMore}
                             onChange={(event) =>
-                                onDifficultyChange("hard", event.target.checked)
+                                onAccidentalChange("threeOrMore", event.target.checked)
                             }
                         />
-                        Hard
+                        3+
                     </label>
                 </div>
             </div>
-
-
         </div>
     );
 }
