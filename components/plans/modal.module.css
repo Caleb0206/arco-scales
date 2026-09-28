@@ -1,0 +1,98 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-4);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modalActions {
+    display: flex;
+    justify-self: end;
+    gap: var(--space-1);
+    margin: var(--space-2);
+
+}
+
+.modalContent {
+    width: 100%;
+    max-width: 40rem;
+    /* controls maximum width of modal */
+    max-height: 90vh;
+    /* prevent overflow beyond viewport */
+    overflow: auto;
+    /* allow internal scrolling if content tall */
+    background: var(--md-sys-color-surface-container);
+    border-radius: var(--radius-2, 1rem);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    padding: var(--space-4);
+}
+
+.modalContent button {
+    border: var(--border-1) solid var(--md-sys-color-outline);
+
+    border-radius: 1rem;
+    padding: var(--space-3);
+    cursor: pointer;
+
+    color: var(--md-sys-color-on-surface);
+    background-color: var(--md-sys-color-surface);
+}
+
+.modalContent button:hover {
+    background-color: var(--md-sys-color-surface-container-high);
+}
+
+
+.formField {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.formField label {
+    font-weight: 600;
+}
+
+.formField input,
+.formField select,
+.formField textarea {
+    padding: var(--space-2);
+    border-radius: var(--radius-1);
+    border: var(--border-1) solid var(--md-sys-color-outline);
+    font-family: var(--font-body)
+}
+
+.formError {
+    color: var(--md-sys-color-error);
+    background: var(--md-sys-color-error-container);
+    padding: var(--space-2);
+    border-radius: var(--radius-1);
+    margin-bottom: var(--space-2);
+}
+
+.scaleChoices {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    max-height: 18rem;
+    overflow-y: auto;
+    padding: var(--space-3);
+    border: var(--border-1) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--radius-1);
+    min-width: 0;
+}
+
+.scaleChoice {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
