@@ -16,6 +16,9 @@ export default function Practice() {
             <main className={styles.practiceWorkspace}>
                 <div className={styles.practiceHeader}>
                     <h1>Practice</h1>
+                    <p className={styles.planContext}>
+                        Plan: Major Foundations 1 of 3
+                        </p>
                     <button
                         className={styles.diagramOpenButton}
                         type="button"
@@ -25,6 +28,8 @@ export default function Practice() {
                     >
                         View Fingering Diagram
                     </button>
+                    
+
                 </div>
 
                 <div className={styles.practiceTools}>
