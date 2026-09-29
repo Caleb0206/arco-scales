@@ -106,7 +106,7 @@ export const scales: Scale[] = [
         type: "minor",
         accidentalCount: 1,
         lastPracticed: null,
-        keySignatureImage: "/key-signatures/e-minor.png",
+        keySignatureImage: "/key-signatures/g-major.png",
         notes: ["E", "F♯", "G", "A", "B", "C", "D"],
     },
     {

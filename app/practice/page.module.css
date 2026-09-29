@@ -120,6 +120,13 @@
     border-radius: var(--radius-2);
 }
 
+.metronomeBeatImage {
+    width: 3rem;
+    height: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}
+
 .metronome input {
     padding: var(--space-2);
     border-radius: var(--radius-1);

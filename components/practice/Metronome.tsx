@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import styles from "../../app/practice/page.module.css";
+import Image from "next/image";
 
 export default function Metronome() {
     const [selectedBPM, setSelectedBPM] = useState(80);
@@ -15,6 +16,13 @@ export default function Metronome() {
             /> */}
             <div className={styles.metronomeControls}>
                 <div className={styles.metronomeBeat}>
+                    <Image
+                        className={styles.metronomeBeatImage}
+                        src={"/beats/quarter-note.png"}
+                        alt={`Quarter note`}
+                        width={400}
+                        height={100}
+                    />
                     ♩
                 </div>
 
