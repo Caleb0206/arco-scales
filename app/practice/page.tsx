@@ -14,6 +14,20 @@ export default function Practice() {
     const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
     const [isDiagramOpen, setIsDiagramOpen] = useState(false);
 
+    const [completeScaleNames, setCompleteScaleNames] = useState<string[]>([]);
+
+    const isCurrentScaleComplete = completeScaleNames.includes(
+        selectedScale.name
+    );
+
+    function handleComplete() {
+        setCompleteScaleNames((currentScales) => {
+            if (currentScales.includes(selectedScale.name)) {
+                return currentScales;
+            }
+            return [...currentScales, selectedScale.name];
+        });
+    }
 
     return (
         <div>
@@ -45,7 +59,10 @@ export default function Practice() {
                         <Metronome />
 
                         <div className={styles.mobileCompleteButton}>
-                            <CompleteButton />
+                            <CompleteButton
+                                isComplete={isCurrentScaleComplete}
+                                onComplete={handleComplete}
+                            />
                         </div>
                     </div>
                 </div>
@@ -71,7 +88,10 @@ export default function Practice() {
                     </div>
 
                     <div className={styles.desktopCompleteButton}>
-                        <CompleteButton />
+                        <CompleteButton
+                                isComplete={isCurrentScaleComplete}
+                                onComplete={handleComplete}
+                            />
                     </div>
 
                 </div>

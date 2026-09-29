@@ -23,7 +23,7 @@ export default function Metronome() {
                         width={400}
                         height={100}
                     />
-                    ♩
+                    {/* ♩ */}
                 </div>
 
                 <label className={styles.selectorField} htmlFor="bpm">
