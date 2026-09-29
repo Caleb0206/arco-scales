@@ -27,7 +27,7 @@
 .practiceRightPanel {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: var(--space-3);
 }
 
 .practiceSelector {
@@ -133,6 +133,34 @@
     outline: 2px solid var(--md-sys-color-primary);
 }
 
+.metronomeCompleteRow {
+    display: flex;
+    align-items: stretch;
+    gap: var(--space-2);
+}
+
+.metronomeCompleteRow>:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.metronomeCompleteRow>:last-child {
+    flex: 0 0 auto;
+}
+
+.mobileCompleteButton {
+    display: flex;
+    flex: 0 0 auto;
+}
+
+.mobileCompleteButton>button {
+    height: 100%;
+}
+
+.desktopCompleteButton {
+    display: none;
+}
+
 /* Fingering Diagram */
 
 .practiceTools {
@@ -184,7 +212,6 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    margin-top: var(--space-2);
     padding: var(--space-4) var(--space-4);
     border-radius: var(--radius-2);
     border: 1px solid var(--md-sys-color-outline);
@@ -210,18 +237,43 @@
 
 @media only screen and (min-width: 40rem) {
 
-    .practiceWorkspace>h1,
+    /* .practiceWorkspace>h1, */
     .practiceHeader {
         grid-column: 1 / -1;
+        grid-row: 1;
     }
 
     .practiceWorkspace {
         grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+        grid-template-rows: auto auto auto;
         align-items: start;
     }
 
+    .practiceTools {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .mobileCompleteButton {
+        display: none;
+    }
+
+    .desktopCompleteButton {
+        display: block;
+    }
+
+
     .selectorControls {
         flex-direction: row;
+    }
+
+    .practiceRightPanel {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .keySigInfo {
+        grid-column: 1;
     }
 
     .metronomeControls {

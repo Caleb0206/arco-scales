@@ -1,28 +1,18 @@
 "use client";
 import { useState } from "react";
 import styles from "../../app/practice/page.module.css";
+import { scales } from "@/data/scales";
 
+type ScaleSelectorProps = {
+    selectedScaleName: string;
+    onScaleChange: (scaleName: string) => void;
+}
 
-const scaleOptions = [
-    "A Major",
-    "B Major",
-    "C Major",
-    "D Major",
-    "E Major",
-    "F Major",
-    "G Major",
-    "A Minor",
-    "B Minor",
-    "C Minor",
-    "D Minor",
-    "E Minor",
-    "F Minor",
-    "G Minor",
-];
-export default function ScaleSelector() {
+export default function ScaleSelector({
+    selectedScaleName,
+    onScaleChange,
+}: ScaleSelectorProps) {
 
-
-    const [selectedScale, setSelectedScale] = useState("A Major");
     const [selectedOctaves, setSelectedOctaves] = useState(2);
 
     return (
@@ -30,10 +20,13 @@ export default function ScaleSelector() {
             <div className={styles.selectorControls}>
                 <label className={styles.selectorField} htmlFor="scale">
                     Scale
-                    <select id="scale" value={selectedScale} onChange={(event) => setSelectedScale(event.target.value)}>
-                        {scaleOptions.map((scale) => (
-                            <option key={scale} value={scale}>
-                                {scale}
+                    <select
+                        id="scale" value={selectedScaleName}
+                        onChange={(event) => onScaleChange(event.target.value)}
+                    >
+                        {scales.map((scale) => (
+                            <option key={scale.name} value={scale.name}>
+                                {scale.name}
                             </option>
                         ))}
                     </select>

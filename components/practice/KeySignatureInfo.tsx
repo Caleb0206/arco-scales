@@ -1,30 +1,25 @@
 import styles from "../../app/practice/page.module.css";
+import Image from "next/image";
+import type { Scale } from "@/data/scales";
 
-const scaleOptions = [
-    "A Major",
-    "B Major",
-    "C Major",
-    "D Major",
-    "E Major",
-    "F Major",
-    "G Major",
-    "A Minor",
-    "B Minor",
-    "C Minor",
-    "D Minor",
-    "E Minor",
-    "F Minor",
-    "G Minor",
-];
-const placeholderImage = "https://placehold.co/400x100";
-export default function KeySignatureInfo() {
+type KeySignatureInfoProps = {
+    scale: Scale;
+}
+export default function KeySignatureInfo({
+    scale,
+}: KeySignatureInfoProps) {
 
     return (
         <section className={styles.keySigInfo}>
             <h2>Key Signature</h2>
-            <img className={styles.keySigImage} src={placeholderImage} alt="Key signature image" />
-
-            <p>Notes: </p>
+            <Image
+                className={styles.keySigImage}
+                src={scale.keySignatureImage}
+                alt={`Key signature for ${scale.name}`}
+                width={400}
+                height={100}
+            />
+            <p>Notes: {scale.notes.join(", ")} </p>
         </section>
     );
 }

@@ -1,6 +1,21 @@
 "use client";
 import styles from "./modal.module.css";
-import { useEffect, useState, useId } from "react";
+import { useEffect, useState } from "react";
+
+
+type PlanDraft = {
+    name: string;
+    description: string;
+    scales: string[];
+};
+
+type CreatePlanModalProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (draft: PlanDraft) => void;
+    mode: "create" | "edit";
+    plan?: PlanDraft;
+};
 
 const scaleOptions = [
     "A Major",
@@ -25,7 +40,7 @@ export function CreatePlanModal({
     onSave,
     mode,
     plan
-}) {
+}: CreatePlanModalProps) {
     const [submitError, setSubmitError] = useState("");
     const [title, setTitle] = useState(() => plan?.name ?? "");
     const [description, setDescription] = useState(() => plan?.description ?? "");
@@ -35,7 +50,7 @@ export function CreatePlanModal({
     useEffect(() => {
         if (!isOpen) return;
 
-        function onKey(e) {
+        function onKey(e: KeyboardEvent) {
             if (e.key === "Escape") onClose();
         }
 
@@ -57,6 +72,25 @@ export function CreatePlanModal({
         });
     }
 
+    function handleSubmit() {
+        if (!title.trim()) {
+            setSubmitError("Please enter a plan title.");
+            return;
+        }
+
+        if (selectedScales.length === 0) {
+            setSubmitError("Please choose at least one scale.");
+            return;
+        }
+        setSubmitError("");
+
+        onSave({
+            name: title.trim(),
+            description: description.trim(),
+            scales: selectedScales,
+        });
+    }
+
     return (
         <div
             className={styles.modalOverlay}
@@ -73,7 +107,12 @@ export function CreatePlanModal({
                 aria-modal="true"
                 aria-labelledby="edit-recipe-title"
             >
-                <form className="edit-recipe-form" >
+                <form
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        handleSubmit();
+                    }}
+                >
                     <header className={styles.modalHeader}>
                         <h2 id="edit-recipe-title">{header}</h2>
                         <button
@@ -115,12 +154,12 @@ export function CreatePlanModal({
 
                         {scaleOptions.map((scale) => (
                             <label className={styles.scaleChoice} key={scale}>
-                                <input 
-                                type="checkbox"
-                                checked={selectedScales.includes(scale)}
-                                onChange={(event) =>
-                                    handleScaleChange(scale, event.target.checked)
-                                }
+                                <input
+                                    type="checkbox"
+                                    checked={selectedScales.includes(scale)}
+                                    onChange={(event) =>
+                                        handleScaleChange(scale, event.target.checked)
+                                    }
                                 />
                                 {scale}
                             </label>

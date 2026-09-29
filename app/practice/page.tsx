@@ -2,6 +2,7 @@
 import { useState } from "react";
 import styles from "./page.module.css";
 
+import { scales } from "@/data/scales";
 import ScaleSelector from "@/components/practice/ScaleSelector";
 import KeySignatureInfo from "@/components/practice/KeySignatureInfo";
 import Metronome from "@/components/practice/Metronome";
@@ -9,7 +10,10 @@ import FingeringDiagram from "@/components/practice/FingeringDiagram";
 import CompleteButton from "@/components/practice/CompleteButton";
 
 export default function Practice() {
+    const [selectedScaleName, setSelectedSCaleName] = useState(scales[0].name);
+    const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
     const [isDiagramOpen, setIsDiagramOpen] = useState(false);
+
 
     return (
         <div>
@@ -18,7 +22,7 @@ export default function Practice() {
                     <h1>Practice</h1>
                     <p className={styles.planContext}>
                         Plan: Major Foundations 1 of 3
-                        </p>
+                    </p>
                     <button
                         className={styles.diagramOpenButton}
                         type="button"
@@ -28,14 +32,22 @@ export default function Practice() {
                     >
                         View Fingering Diagram
                     </button>
-                    
-
                 </div>
 
                 <div className={styles.practiceTools}>
-                    <ScaleSelector />
-                    <KeySignatureInfo />
-                    <Metronome />
+                    <ScaleSelector
+                        selectedScaleName={selectedScaleName}
+                        onScaleChange={setSelectedSCaleName}
+                    />
+                    <KeySignatureInfo scale={selectedScale} />
+
+                    <div className={styles.metronomeCompleteRow}>
+                        <Metronome />
+
+                        <div className={styles.mobileCompleteButton}>
+                            <CompleteButton />
+                        </div>
+                    </div>
                 </div>
                 <div className={styles.practiceRightPanel}>
                     <div
@@ -57,7 +69,11 @@ export default function Practice() {
                         <FingeringDiagram />
 
                     </div>
-                    <CompleteButton />
+
+                    <div className={styles.desktopCompleteButton}>
+                        <CompleteButton />
+                    </div>
+
                 </div>
 
             </main>

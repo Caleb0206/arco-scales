@@ -11,7 +11,14 @@ type Plan = {
     scales: string[];
     completedScales: string[];
 };
-const plans: Plan[] = [
+
+type PlanDraft = {
+    name: string;
+    description: string;
+    scales: string[];
+};
+
+const initialPlans: Plan[] = [
     {
         id: "major-foundations",
         name: "Major Foundations",
@@ -33,19 +40,17 @@ const plans: Plan[] = [
         scales: ["B Major", "F Major", "C Minor"],
         completedScales: ["B Major"],
     },
-]
+];
+
+
 export default function Plans() {
-    const [selectedPlanId, setSelectedPlanId] = useState(plans[0].id);
+    const [plans, setPlans] = useState<Plan[]>(initialPlans);
+    const [selectedPlanId, setSelectedPlanId] = useState(initialPlans[0].id);
+
+
     const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
+    const completedScales = selectedPlan.completedScales;
 
-    const [planProgress, setPlanProgress] = useState<Record<string, string[]>>(
-        () =>
-            Object.fromEntries(
-                plans.map((plan) => [plan.id, plan.completedScales])
-            )
-    );
-
-    const completedScales = planProgress[selectedPlan.id] ?? [];
 
     const completedCount = selectedPlan.scales.filter((scale) =>
         completedScales.includes(scale)
@@ -59,10 +64,27 @@ export default function Plans() {
             : Math.round((completedCount / totalScales) * 100);
 
     function handleRestartPlan() {
-        setPlanProgress((currentProgress) => ({
-            ...currentProgress,
-            [selectedPlan.id]: [],
-        }));
+        setPlans((currentPlans) =>
+            currentPlans.map((plan) =>
+                plan.id === selectedPlan.id
+                    ? { ...plan, completedScales: [] }
+                    : plan
+            )
+        );
+    };
+
+    function handleCreatePlan(draft: PlanDraft) {
+        const newPlan: Plan = {
+            id: crypto.randomUUID(),
+            name: draft.name,
+            description: draft.description,
+            scales: draft.scales,
+            completedScales: [],
+        }
+
+        setPlans((currentPlans) => [...currentPlans, newPlan]);
+        setSelectedPlanId(newPlan.id);
+        setShowCreatePlanModal(false);
     }
 
     const [showCreatePlanModal, setShowCreatePlanModal] = useState(false);
@@ -167,10 +189,10 @@ export default function Plans() {
             </main >
 
             <CreatePlanModal
-
                 isOpen={showCreatePlanModal}
                 mode="create"
                 onClose={() => setShowCreatePlanModal(false)}
+                onSave={handleCreatePlan}
             />
         </div >
 
