@@ -8,25 +8,53 @@ import KeySignatureInfo from "@/components/practice/KeySignatureInfo";
 import Metronome from "@/components/practice/Metronome";
 import FingeringDiagram from "@/components/practice/FingeringDiagram";
 import CompleteButton from "@/components/practice/CompleteButton";
+import { useSearchParams } from "next/navigation";
+import { usePlans } from "@/context/PlansContext";
 
 export default function Practice() {
     const [selectedScaleName, setSelectedSCaleName] = useState(scales[0].name);
     const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
     const [isDiagramOpen, setIsDiagramOpen] = useState(false);
 
-    const [completeScaleNames, setCompleteScaleNames] = useState<string[]>([]);
+    // const [completeScaleNames, setCompleteScaleNames] = useState<string[]>([]);
 
-    const isCurrentScaleComplete = completeScaleNames.includes(
-        selectedScale.name
-    );
+    // const isCurrentScaleComplete = completeScaleNames.includes(
+    //     selectedScale.name
+    // );
+
+    // function handleComplete() {
+    //     setCompleteScaleNames((currentScales) => {
+    //         if (currentScales.includes(selectedScale.name)) {
+    //             return currentScales;
+    //         }
+    //         return [...currentScales, selectedScale.name];
+    //     });
+    // }
+    const searchParams = useSearchParams();
+    const { plans, completeScale } = usePlans();
+    const planId = searchParams.get("plan");
+    const activePlan = plans.find((plan) => plan.id === planId);
+    const totalScales = activePlan?.scales.length ?? 0;
+
+    const isCurrentScaleInPlan =
+        activePlan?.scales.includes(selectedScale.name) ?? false;
+
+    const isCurrentScaleComplete =
+        activePlan?.completedScales.includes(selectedScale.name) ?? false;
+
+    const completedCount = activePlan
+        ? activePlan.scales.filter((scaleName) =>
+            activePlan.completedScales.includes(scaleName)
+        ).length
+        : 0;
+
 
     function handleComplete() {
-        setCompleteScaleNames((currentScales) => {
-            if (currentScales.includes(selectedScale.name)) {
-                return currentScales;
-            }
-            return [...currentScales, selectedScale.name];
-        });
+        if (!activePlan || !isCurrentScaleInPlan) {
+            return;
+        }
+
+        completeScale(activePlan.id, selectedScale.name);
     }
 
     return (
@@ -35,7 +63,9 @@ export default function Practice() {
                 <div className={styles.practiceHeader}>
                     <h1>Practice</h1>
                     <p className={styles.planContext}>
-                        Plan: Major Foundations 1 of 3
+                        {activePlan
+                            ? `Plan: ${activePlan.name} ${completedCount} of ${totalScales}`
+                            : "Free practice"}
                     </p>
                     <button
                         className={styles.diagramOpenButton}
@@ -61,6 +91,7 @@ export default function Practice() {
                         <div className={styles.mobileCompleteButton}>
                             <CompleteButton
                                 isComplete={isCurrentScaleComplete}
+                                canComplete={isCurrentScaleInPlan}
                                 onComplete={handleComplete}
                             />
                         </div>
@@ -89,9 +120,10 @@ export default function Practice() {
 
                     <div className={styles.desktopCompleteButton}>
                         <CompleteButton
-                                isComplete={isCurrentScaleComplete}
-                                onComplete={handleComplete}
-                            />
+                            isComplete={isCurrentScaleComplete}
+                            canComplete={isCurrentScaleInPlan}
+                            onComplete={handleComplete}
+                        />
                     </div>
 
                 </div>

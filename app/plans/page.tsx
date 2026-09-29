@@ -3,49 +3,14 @@ import { useState } from "react";
 import styles from "./page.module.css";
 import { CreatePlanModal } from "@/components/plans/CreatePlanModal";
 import Link from "next/link";
-
-type Plan = {
-    id: string;
-    name: string;
-    description: string;
-    scales: string[];
-    completedScales: string[];
-};
-
-type PlanDraft = {
-    name: string;
-    description: string;
-    scales: string[];
-};
-
-const initialPlans: Plan[] = [
-    {
-        id: "major-foundations",
-        name: "Major Foundations",
-        description: "Practice a set of common major scales at a comfortable tempo.",
-        scales: ["A Major", "D Major", "G Major"],
-        completedScales: ["A Major"],
-    },
-    {
-        id: "minor-focus",
-        name: "Minor Focus",
-        description: "Practice a set of common minor scales with focus on fingerings.",
-        scales: ["A Minor", "D Minor", "E Minor"],
-        completedScales: [],
-    },
-    {
-        id: "challenge-plan",
-        name: "Challenge Plan",
-        description: "Practice less recent scales.",
-        scales: ["B Major", "F Major", "C Minor"],
-        completedScales: ["B Major"],
-    },
-];
+import { usePlans, type PlanDraft } from "@/context/PlansContext";
 
 
 export default function Plans() {
-    const [plans, setPlans] = useState<Plan[]>(initialPlans);
-    const [selectedPlanId, setSelectedPlanId] = useState(initialPlans[0].id);
+    const { plans, restartPlan, addPlan } = usePlans();
+    const [selectedPlanId, setSelectedPlanId] = useState(
+        () => plans[0].id
+    );
 
 
     const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
@@ -64,26 +29,13 @@ export default function Plans() {
             : Math.round((completedCount / totalScales) * 100);
 
     function handleRestartPlan() {
-        setPlans((currentPlans) =>
-            currentPlans.map((plan) =>
-                plan.id === selectedPlan.id
-                    ? { ...plan, completedScales: [] }
-                    : plan
-            )
-        );
+        restartPlan(selectedPlan.id);
     };
 
     function handleCreatePlan(draft: PlanDraft) {
-        const newPlan: Plan = {
-            id: crypto.randomUUID(),
-            name: draft.name,
-            description: draft.description,
-            scales: draft.scales,
-            completedScales: [],
-        }
+        const newPlanId = addPlan(draft);
 
-        setPlans((currentPlans) => [...currentPlans, newPlan]);
-        setSelectedPlanId(newPlan.id);
+        setSelectedPlanId(newPlanId);
         setShowCreatePlanModal(false);
     }
 
