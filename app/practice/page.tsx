@@ -2,6 +2,8 @@
 import { useState } from "react";
 import styles from "./page.module.css";
 
+import Link from "next/link";
+
 import { scales } from "@/data/scales";
 import ScaleSelector from "@/components/practice/ScaleSelector";
 import KeySignatureInfo from "@/components/practice/KeySignatureInfo";
@@ -12,49 +14,43 @@ import { useSearchParams } from "next/navigation";
 import { usePlans } from "@/context/PlansContext";
 
 export default function Practice() {
-    const [selectedScaleName, setSelectedSCaleName] = useState(scales[0].name);
-    const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
-    const [isDiagramOpen, setIsDiagramOpen] = useState(false);
-
-    // const [completeScaleNames, setCompleteScaleNames] = useState<string[]>([]);
-
-    // const isCurrentScaleComplete = completeScaleNames.includes(
-    //     selectedScale.name
-    // );
-
-    // function handleComplete() {
-    //     setCompleteScaleNames((currentScales) => {
-    //         if (currentScales.includes(selectedScale.name)) {
-    //             return currentScales;
-    //         }
-    //         return [...currentScales, selectedScale.name];
-    //     });
-    // }
     const searchParams = useSearchParams();
-    const { plans, completeScale } = usePlans();
+
+    const { plans, completedScaleNames, toggleScaleComplete } = usePlans();
     const planId = searchParams.get("plan");
     const activePlan = plans.find((plan) => plan.id === planId);
+
+    const startingScaleName =
+        activePlan?.scales.find(
+            (scaleName) => !completedScaleNames.includes(scaleName)
+        ) ??
+        activePlan?.scales[0] ??
+        scales[0].name;
+
+    const [selectedScaleName, setSelectedSCaleName] = useState(startingScaleName);
+
+    const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
+
+    // Available scales : in the current plan or just every scale available
+    const availableScales = activePlan
+        ? scales.filter((scale) => activePlan.scales.includes(scale.name))
+        : scales;
+
+    const [isDiagramOpen, setIsDiagramOpen] = useState(false);
+
     const totalScales = activePlan?.scales.length ?? 0;
 
-    const isCurrentScaleInPlan =
-        activePlan?.scales.includes(selectedScale.name) ?? false;
-
-    const isCurrentScaleComplete =
-        activePlan?.completedScales.includes(selectedScale.name) ?? false;
+    const isCurrentScaleComplete = completedScaleNames.includes(selectedScale.name);
 
     const completedCount = activePlan
         ? activePlan.scales.filter((scaleName) =>
-            activePlan.completedScales.includes(scaleName)
+            completedScaleNames.includes(scaleName)
         ).length
         : 0;
 
 
     function handleComplete() {
-        if (!activePlan || !isCurrentScaleInPlan) {
-            return;
-        }
-
-        completeScale(activePlan.id, selectedScale.name);
+        toggleScaleComplete(selectedScale.name);
     }
 
     return (
@@ -62,10 +58,11 @@ export default function Practice() {
             <main className={styles.practiceWorkspace}>
                 <div className={styles.practiceHeader}>
                     <h1>Practice</h1>
+                    {activePlan && <Link href="/scales">Leave plan, browse all scales</Link>}
                     <p className={styles.planContext}>
                         {activePlan
-                            ? `Plan: ${activePlan.name} ${completedCount} of ${totalScales}`
-                            : "Free practice"}
+                            ? `Plan: ${activePlan.name} ${completedCount} of ${totalScales} completed`
+                            : "Free practice - choose any available scale"}
                     </p>
                     <button
                         className={styles.diagramOpenButton}
@@ -80,6 +77,7 @@ export default function Practice() {
 
                 <div className={styles.practiceTools}>
                     <ScaleSelector
+                        scales={availableScales}
                         selectedScaleName={selectedScaleName}
                         onScaleChange={setSelectedSCaleName}
                     />
@@ -91,7 +89,6 @@ export default function Practice() {
                         <div className={styles.mobileCompleteButton}>
                             <CompleteButton
                                 isComplete={isCurrentScaleComplete}
-                                canComplete={isCurrentScaleInPlan}
                                 onComplete={handleComplete}
                             />
                         </div>
@@ -121,7 +118,6 @@ export default function Practice() {
                     <div className={styles.desktopCompleteButton}>
                         <CompleteButton
                             isComplete={isCurrentScaleComplete}
-                            canComplete={isCurrentScaleInPlan}
                             onComplete={handleComplete}
                         />
                     </div>

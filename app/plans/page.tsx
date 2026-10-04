@@ -7,18 +7,16 @@ import { usePlans, type PlanDraft } from "@/context/PlansContext";
 
 
 export default function Plans() {
-    const { plans, restartPlan, addPlan } = usePlans();
+    const { plans, completedScaleNames, restartPlan, addPlan } = usePlans();
     const [selectedPlanId, setSelectedPlanId] = useState(
         () => plans[0].id
     );
 
 
     const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
-    const completedScales = selectedPlan.completedScales;
 
-
-    const completedCount = selectedPlan.scales.filter((scale) =>
-        completedScales.includes(scale)
+    const completedCount = selectedPlan.scales.filter((scaleName) =>
+        completedScaleNames.includes(scaleName)
     ).length;
 
     const totalScales = selectedPlan.scales.length;

@@ -11,7 +11,8 @@ export type PlanDraft = {
 
 type PlansContextValue = {
     plans: Plan[];
-    completeScale: (planId: string, scaleName: string) => void;
+    completedScaleNames: string[];
+    toggleScaleComplete: (scaleName: string) => void;
     restartPlan: (planId: string) => void;
     addPlan: (draft: PlanDraft) => string;
 };
@@ -24,30 +25,36 @@ export function PlansProvider({
     children: React.ReactNode;
 }) {
     const [plans, setPlans] = useState<Plan[]>(initialPlans);
+    const [completedScaleNames, setCompletedScaleNames] = useState<string[]>(
+        () =>
+            [...new Set(
+                initialPlans.flatMap((plan) => plan.completedScales)
+            )]
+    );
 
-    function completeScale(planId: string, scaleName: string) {
-        setPlans((currentPlans) =>
-            currentPlans.map((plan) => {
-                if (plan.id !== planId) {
-                    return plan;
-                }
 
-                if (plan.completedScales.includes(scaleName)) {
-                    return plan;
-                }
+    function toggleScaleComplete(scaleName: string) {
+        setCompletedScaleNames((currentScales) => {
 
-                return {
-                    ...plan,
-                    completedScales: [...plan.completedScales, scaleName],
-                };
-            }));
+            if (currentScales.includes(scaleName)) {
+                return currentScales.filter(
+                    (completedScale) => completedScale !== scaleName
+                );
+            }
+            return [...currentScales, scaleName];
+
+        });
     }
     function restartPlan(planId: string) {
-        setPlans((currentPlans) =>
-            currentPlans.map((plan) =>
-                plan.id === planId
-                    ? { ...plan, completedScales: [] }
-                    : plan
+        const planToRestart = plans.find((plan) => plan.id === planId);
+        if (!planToRestart) {
+            return;
+        }
+
+        setCompletedScaleNames((currentScales) =>
+            currentScales.filter(
+                (scaleName) =>
+                    !planToRestart.scales.includes(scaleName)
             )
         );
     };
@@ -67,7 +74,14 @@ export function PlansProvider({
     }
 
     return (
-        <PlansContext.Provider value={{ plans, completeScale, restartPlan, addPlan }}>
+        <PlansContext.Provider
+            value={{
+                plans,
+                completedScaleNames,
+                toggleScaleComplete,
+                restartPlan,
+                addPlan
+            }}>
             {children}
         </PlansContext.Provider>
     )

@@ -1,14 +1,16 @@
 "use client";
 import { useState } from "react";
 import styles from "../../app/practice/page.module.css";
-import { scales } from "@/data/scales";
+import { Scale } from "@/data/scales";
 
 type ScaleSelectorProps = {
+    scales: Scale[];
     selectedScaleName: string;
     onScaleChange: (scaleName: string) => void;
 }
 
 export default function ScaleSelector({
+    scales,
     selectedScaleName,
     onScaleChange,
 }: ScaleSelectorProps) {
