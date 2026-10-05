@@ -111,9 +111,14 @@
     gap: var(--space-3);
 }
 
-.metronomeBeat,
+
 .metronomeControls .selectorField {
     flex: 1;
+}
+
+.metronomeBeat {
+    flex: 1;
+    transition: transform 80ms ease, background-color 80ms ease;
 }
 
 .metronomeBeat {
@@ -122,8 +127,14 @@
     padding: var(--space-4);
     min-width: 5rem;
     background: var(--md-sys-color-secondary-container);
-    border: var(--border-1) solid var(--md-sys-color-outline-variant);
+    /* border: var(--border-1) solid var(--md-sys-color-outline-variant); */
     border-radius: var(--radius-2);
+    cursor: pointer;
+}
+
+.metronomeBeat.isActive {
+    background: var(--md-sys-color-tertiary-container);
+    transform: scale(1.5);
 }
 
 .metronomeBeatImage {
@@ -305,7 +316,6 @@
 
     .metronomeBeat {
         min-height: 5rem;
-
     }
 
     .diagramOpenButton,
