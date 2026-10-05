@@ -14,33 +14,61 @@ import { useSearchParams } from "next/navigation";
 import { usePlans } from "@/context/PlansContext";
 
 export default function Practice() {
+    // URL values determine if user arrived from ScaleLibrary or practice plan
     const searchParams = useSearchParams();
-
-    const { plans, completedScaleNames, toggleScaleComplete } = usePlans();
+    const requestedScaleName = searchParams.get("scale");
     const planId = searchParams.get("plan");
+
+    // Find requested scale if there is one
+    const requestedScale = scales.find(
+        (scale) => scale.name === requestedScaleName
+    );
+
+    // PlansContext shared plan and states
+    const {
+        plans,
+        completedScaleNames,
+        toggleScaleComplete
+    } = usePlans();
+
+    // Current plan exists only when URL includes a valid plan ID.
     const activePlan = plans.find((plan) => plan.id === planId);
 
-    const startingScaleName =
+    // In plan mode, begin with first scale that isn't complete.
+    // else, use first scale
+    const planStartingScaleName =
         activePlan?.scales.find(
             (scaleName) => !completedScaleNames.includes(scaleName)
-        ) ??
-        activePlan?.scales[0] ??
-        scales[0].name;
 
+        ) ??
+        activePlan?.scales[0];
+
+    /*
+    Decide the initial scale:
+    - Plan mode: plan's starting scale
+    - Free practice: scale from Scale Library
+    - Fallback: first scale in the database
+    */
+    const startingScaleName = activePlan
+        ? planStartingScaleName ?? scales[0].name
+        : requestedScale?.name ?? scales[0].name;
+
+    // Local practice-page state: which scale is currently displayed.
     const [selectedScaleName, setSelectedSCaleName] = useState(startingScaleName);
 
+    // Find complete scale data object for current scale name
     const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
 
-    // Available scales : in the current plan or just every scale available
+    // Plan mode limits selector scales. Free practice allows everything
     const availableScales = activePlan
         ? scales.filter((scale) => activePlan.scales.includes(scale.name))
         : scales;
 
+    // Local UI state for the mobile fingering-diagram overlay
     const [isDiagramOpen, setIsDiagramOpen] = useState(false);
 
+    // Derived plan progress values for header and progress display
     const totalScales = activePlan?.scales.length ?? 0;
-
-    const isCurrentScaleComplete = completedScaleNames.includes(selectedScale.name);
 
     const completedCount = activePlan
         ? activePlan.scales.filter((scaleName) =>
@@ -48,7 +76,10 @@ export default function Practice() {
         ).length
         : 0;
 
+    // Whether currently displayed scale is marked complete
+    const isCurrentScaleComplete = completedScaleNames.includes(selectedScale.name);
 
+    // Mark or unmark the selected scale
     function handleComplete() {
         toggleScaleComplete(selectedScale.name);
     }
@@ -56,14 +87,18 @@ export default function Practice() {
     return (
         <div>
             <main className={styles.practiceWorkspace}>
-                <div className={styles.practiceHeader}>
-                    <h1>Practice</h1>
-                    {activePlan && <Link href="/scales">Leave plan, browse all scales</Link>}
-                    <p className={styles.planContext}>
-                        {activePlan
-                            ? `Plan: ${activePlan.name} ${completedCount} of ${totalScales} completed`
-                            : "Free practice - choose any available scale"}
-                    </p>
+                <header className={styles.practiceHeader}>
+                    <div className={styles.practiceHeaderText}>
+                        <h1>Practice</h1>
+
+                        <p className={styles.planContext}>
+                            {activePlan
+                                ? `Plan: ${activePlan.name} ${completedCount} of ${totalScales} completed`
+                                : "Free practice - choose any available scale"}
+                        </p>
+                    </div>
+
+
                     <button
                         className={styles.diagramOpenButton}
                         type="button"
@@ -73,7 +108,7 @@ export default function Practice() {
                     >
                         View Fingering Diagram
                     </button>
-                </div>
+                </header>
 
                 <div className={styles.practiceTools}>
                     <ScaleSelector

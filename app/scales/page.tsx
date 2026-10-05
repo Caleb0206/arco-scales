@@ -147,7 +147,7 @@ export default function Scales() {
                                 <li key={scale.name}>
                                     <Link
                                         className={styles.scaleLibraryRow}
-                                        href={`/practice`}
+                                        href={`/practice?scale=${encodeURIComponent(scale.name)}`}
                                     >
                                         <span className={styles.scaleName}>
                                             {scale.name}
