@@ -113,12 +113,29 @@ export default function Practice() {
                 </header>
 
                 <div className={styles.practiceTools}>
+                    {activePlan && (
+                        <aside className={styles.planNotice} aria-labelledby="plan-notice-heading">
+                            <h2 id="plan-notice-heading">
+                                Practicing a plan
+                            </h2>
+                            <p>
+                                You are working through <strong>{activePlan.name}</strong>.
+                                The scale selector only shows the {totalScales} scales in this plan.
+                                
+                            </p>
+                            <Link href="/scales">
+                                Leave plan and browse all scales.
+                            </Link>
+
+                        </aside>
+                    )}
                     <ScaleSelector
                         scales={availableScales}
                         selectedScaleName={selectedScaleName}
                         selectedOctaves={selectedOctaves}
                         onScaleChange={setSelectedSCaleName}
                         onOctavesChange={setSelectedOctaves}
+                        label={activePlan ? "Scale in this plan" : "Scale"}
                     />
                     <KeySignatureInfo scale={selectedScale} />
 

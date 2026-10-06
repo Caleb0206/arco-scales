@@ -36,6 +36,22 @@
     gap: var(--space-3);
 }
 
+.planNotice {
+    display:grid;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border-left: var(--borer-2) solid var(--md-sys-color-primary);
+    border-radius: var(--radius-1);
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+.planNotice a {
+    width: fit-content;
+    color: inherit;
+    font-weight: 700;
+}
+
 .practiceSelector {
     display: flex;
     flex-direction: column;

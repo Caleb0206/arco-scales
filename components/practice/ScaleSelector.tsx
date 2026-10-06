@@ -9,6 +9,7 @@ type ScaleSelectorProps = {
     selectedOctaves: OctaveCount;
     onScaleChange: (scaleName: string) => void;
     onOctavesChange: (octave: OctaveCount) => void;
+    label: string;
 }
 
 export default function ScaleSelector({
@@ -17,13 +18,14 @@ export default function ScaleSelector({
     selectedScaleName,
     onScaleChange,
     onOctavesChange,
+    label,
 }: ScaleSelectorProps) {
 
     return (
         <section className={styles.practiceSelector} aria-labelledby="current-scale-heading">
             <div className={styles.selectorControls}>
                 <label className={styles.selectorField} htmlFor="scale">
-                    Scale
+                    {label}
                     <select
                         id="scale" value={selectedScaleName}
                         onChange={(event) => onScaleChange(event.target.value)}

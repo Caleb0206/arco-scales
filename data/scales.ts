@@ -106,6 +106,10 @@ export const scales: Scale[] = [
         lastPracticed: null,
         keySignatureImage: "/key-signatures/c-major.svg",
         notes: ["A", "B", "C", "D", "E", "F", "G"],
+        fingeringDiagramImages: {
+            1: "/fingering-diagrams/a-minor-1.svg",
+            2: "/fingering-diagrams/a-minor-2.svg"
+        }
     },
     {
         name: "B Minor",
