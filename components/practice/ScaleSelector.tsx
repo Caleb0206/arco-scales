@@ -1,21 +1,23 @@
 "use client";
 import { useState } from "react";
 import styles from "../../app/practice/page.module.css";
-import { Scale } from "@/data/scales";
+import { Scale, type OctaveCount } from "@/data/scales";
 
 type ScaleSelectorProps = {
     scales: Scale[];
     selectedScaleName: string;
+    selectedOctaves: OctaveCount;
     onScaleChange: (scaleName: string) => void;
+    onOctavesChange: (octave: OctaveCount) => void;
 }
 
 export default function ScaleSelector({
     scales,
+    selectedOctaves,
     selectedScaleName,
     onScaleChange,
+    onOctavesChange,
 }: ScaleSelectorProps) {
-
-    const [selectedOctaves, setSelectedOctaves] = useState(2);
 
     return (
         <section className={styles.practiceSelector} aria-labelledby="current-scale-heading">
@@ -39,7 +41,9 @@ export default function ScaleSelector({
                         id="octaves"
                         value={selectedOctaves}
                         onChange={(event) =>
-                            setSelectedOctaves(Number(event.target.value))
+                            onOctavesChange(
+                                Number(event.target.value) as OctaveCount
+                            )
                         }
                     >
                         <option value={1}>1 octave</option>

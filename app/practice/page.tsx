@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 
 import Link from "next/link";
 
-import { scales } from "@/data/scales";
+import { scales, type OctaveCount } from "@/data/scales";
 import ScaleSelector from "@/components/practice/ScaleSelector";
 import KeySignatureInfo from "@/components/practice/KeySignatureInfo";
 import Metronome from "@/components/practice/Metronome";
@@ -14,6 +14,8 @@ import { useSearchParams } from "next/navigation";
 import { usePlans } from "@/context/PlansContext";
 
 export default function Practice() {
+    const [selectedOctaves, setSelectedOctaves] = useState<OctaveCount>(2);
+
     // URL values determine if user arrived from ScaleLibrary or practice plan
     const searchParams = useSearchParams();
     const requestedScaleName = searchParams.get("scale");
@@ -114,7 +116,9 @@ export default function Practice() {
                     <ScaleSelector
                         scales={availableScales}
                         selectedScaleName={selectedScaleName}
+                        selectedOctaves={selectedOctaves}
                         onScaleChange={setSelectedSCaleName}
+                        onOctavesChange={setSelectedOctaves}
                     />
                     <KeySignatureInfo scale={selectedScale} />
 
@@ -146,7 +150,10 @@ export default function Practice() {
                         >
                             ✕
                         </button>
-                        <FingeringDiagram />
+                        <FingeringDiagram
+                            scale={selectedScale}
+                            selectedOctaves={selectedOctaves}
+                        />
 
                     </div>
 
