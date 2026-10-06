@@ -118,6 +118,10 @@ export const scales: Scale[] = [
         lastPracticed: null,
         keySignatureImage: "/key-signatures/d-major.svg",
         notes: ["B", "C♯", "D", "E", "F♯", "G", "A"],
+        fingeringDiagramImages: {
+            1: "/fingering-diagrams/b-minor-1.svg",
+            2: "/fingering-diagrams/b-minor-2.svg"
+        }
     },
     {
         name: "C Minor",
@@ -126,6 +130,10 @@ export const scales: Scale[] = [
         lastPracticed: null,
         keySignatureImage: "/key-signatures/c-minor.svg",
         notes: ["C", "D", "E♭", "F", "G", "A♭", "B♭"],
+        fingeringDiagramImages: {
+            1: "/fingering-diagrams/c-minor-1.svg",
+            2: "/fingering-diagrams/c-minor-2.svg"
+        }
     },
     {
         name: "D Minor",
@@ -134,6 +142,10 @@ export const scales: Scale[] = [
         lastPracticed: "2026-09-21",
         keySignatureImage: "/key-signatures/f-major.svg",
         notes: ["D", "E", "F", "G", "A", "B♭", "C"],
+        fingeringDiagramImages: {
+            1: "/fingering-diagrams/d-minor-1.svg",
+            2: "/fingering-diagrams/d-minor-2.svg"
+        }
     },
     {
         name: "E Minor",
@@ -142,6 +154,10 @@ export const scales: Scale[] = [
         lastPracticed: null,
         keySignatureImage: "/key-signatures/g-major.svg",
         notes: ["E", "F♯", "G", "A", "B", "C", "D"],
+        fingeringDiagramImages: {
+            1: "/fingering-diagrams/e-minor-1.svg",
+            2: "/fingering-diagrams/e-minor-2.svg"
+        }
     },
     {
         name: "F Minor",
@@ -150,6 +166,10 @@ export const scales: Scale[] = [
         lastPracticed: null,
         keySignatureImage: "/key-signatures/f-minor.svg",
         notes: ["F", "G", "A♭", "B♭", "C", "D♭", "E♭"],
+        fingeringDiagramImages: {
+            1: "/fingering-diagrams/f-minor-1.svg",
+            2: "/fingering-diagrams/f-minor-2.svg"
+        }
     },
     {
         name: "G Minor",
@@ -158,5 +178,9 @@ export const scales: Scale[] = [
         lastPracticed: null,
         keySignatureImage: "/key-signatures/g-minor.svg",
         notes: ["G", "A", "B♭", "C", "D", "E♭", "F"],
+        fingeringDiagramImages: {
+            1: "/fingering-diagrams/g-minor-1.svg",
+            2: "/fingering-diagrams/g-minor-2.svg"
+        }
     },
 ];

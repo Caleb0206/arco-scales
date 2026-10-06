@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 720" role="img" aria-labelledby="title description">
+  <title id="title">Two-octave G minor viola fingering diagram</title>
+  <desc id="description">A two-octave natural G minor scale on viola. Start in first position on open G, then shift to third position on the A string for the upper E flat, F, and G.</desc>
+
+  <rect width="480" height="720" rx="24" fill="#fff8f5"/>
+  <g transform="translate(0 -80) scale(1 1.1)">
+    <g fill="#51443f" font-family="Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle">
+      <text x="110" y="116">C</text><text x="190" y="116">G</text><text x="270" y="116">D</text><text x="350" y="116">A</text>
+    </g>
+    <path d="M48 138H432L470 654H10Z" fill="#3a2924"/>
+    <path d="M48 138H432" stroke="#eee2dc" stroke-width="11" stroke-linecap="round"/>
+    <g stroke="#d8cbc5" stroke-linecap="round">
+      <path d="M110 142L80 654" stroke-width="6"/><path d="M190 142L185 654" stroke-width="4.5"/>
+      <path d="M270 142L295 654" stroke-width="3.4"/><path d="M350 142L400 654" stroke-width="2.5"/>
+    </g>
+
+    <!-- G string: open G, A-1, B flat-low 2, C-low 3, D-4. -->
+    <g font-family="Arial, sans-serif" text-anchor="middle">
+      <circle cx="190" cy="166" r="22" fill="#fff8f5" stroke="#765038" stroke-width="4"/><text x="190" y="172" fill="#201c1b" font-size="17" font-weight="700">G</text><text x="225" y="172" fill="#fff8f5" font-size="16" font-weight="700">0</text>
+      <circle cx="189" cy="250" r="22" fill="#d4e5ff"/><text x="189" y="256" fill="#15304a" font-size="17" font-weight="700">A</text><text x="224" y="256" fill="#fff8f5" font-size="16" font-weight="700">1</text>
+      <circle cx="188" cy="306" r="22" fill="#d4e5ff"/><text x="188" y="312" fill="#15304a" font-size="16" font-weight="700">B♭</text><text x="223" y="312" fill="#fff8f5" font-size="14" font-weight="700">2L</text>
+      <circle cx="187" cy="374" r="22" fill="#d4e5ff"/><text x="187" y="380" fill="#15304a" font-size="17" font-weight="700">C</text><text x="222" y="380" fill="#fff8f5" font-size="14" font-weight="700">3</text>
+      <circle cx="186" cy="486" r="22" fill="#d4e5ff"/><text x="186" y="492" fill="#15304a" font-size="17" font-weight="700">D</text><text x="221" y="492" fill="#fff8f5" font-size="16" font-weight="700">4</text>
+    </g>
+
+    <!-- D string: E flat-low 1, F-low 2, G-low 3, A-4. -->
+    <g font-family="Arial, sans-serif" text-anchor="middle">
+      <circle cx="275" cy="220" r="22" fill="#d4e5ff"/><text x="275" y="226" fill="#15304a" font-size="16" font-weight="700">E♭</text><text x="310" y="226" fill="#fff8f5" font-size="14" font-weight="700">1L</text>
+      <circle cx="278" cy="306" r="22" fill="#d4e5ff"/><text x="278" y="312" fill="#15304a" font-size="17" font-weight="700">F</text><text x="313" y="312" fill="#fff8f5" font-size="14" font-weight="700">2</text>
+      <circle cx="281" cy="374" r="22" fill="#d4e5ff"/><text x="281" y="380" fill="#15304a" font-size="17" font-weight="700">G</text><text x="316" y="380" fill="#fff8f5" font-size="14" font-weight="700">3</text>
+      
+    </g>
+
+    
+
+    <g transform="translate(28 680)" font-family="Arial, sans-serif" font-size="15" fill="#51443f">
+      <circle cx="10" cy="-5" r="9" fill="#fff8f5" stroke="#765038" stroke-width="3"/><text x="26" y="0">Open string</text>
+      <circle cx="150" cy="-5" r="9" fill="#d4e5ff"/><text x="166" y="0">L = low finger</text>
+      <path d="M286 -5H310" stroke="#f4daff" stroke-width="4" stroke-dasharray="5 5"/><text x="320" y="0">Shift to 3rd position on A</text>
+    </g>
+  </g>
+</svg>
