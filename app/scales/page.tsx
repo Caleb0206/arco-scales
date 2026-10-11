@@ -6,6 +6,7 @@ import ScaleFilters, {
     type ScaleType,
     type NumAccidentals,
 } from "@/components/scales/ScaleFilters";
+import { usePlans } from "@/context/PlansContext";
 import styles from "./page.module.css";
 
 
@@ -36,6 +37,8 @@ const scales: Scale[] = [
 ];
 
 export default function Scales() {
+    const {lastPracticedByScale} = usePlans();
+
     const [selectedTypes, setSelectedTypes] = useState<Record<ScaleType, boolean>>({
         major: true,
         minor: true,
@@ -141,7 +144,9 @@ export default function Scales() {
 
                     <ul className={styles.scaleLibraryList}>
                         {visibleScales.map((scale) => {
-                            const practiceStatus = getPracticeStatus(scale.lastPracticed);
+                            const lastPracticed = lastPracticedByScale[scale.name] ?? scale.lastPracticed;
+
+                            const practiceStatus = getPracticeStatus(lastPracticed);
 
                             return (
                                 <li key={scale.name}>

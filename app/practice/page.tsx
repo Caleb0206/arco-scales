@@ -30,7 +30,8 @@ export default function Practice() {
     const {
         plans,
         completedScaleNames,
-        toggleScaleComplete
+        toggleScaleComplete,
+        markScalePracticed,
     } = usePlans();
 
     // Current plan exists only when URL includes a valid plan ID.
@@ -83,6 +84,9 @@ export default function Practice() {
 
     // Mark or unmark the selected scale
     function handleComplete() {
+        if (!isCurrentScaleComplete) {
+            markScalePracticed(selectedScale.name);
+        }
         toggleScaleComplete(selectedScale.name);
     }
 

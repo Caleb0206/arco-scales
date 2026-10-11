@@ -28,11 +28,11 @@ export default function FingeringDiagram({
                     height={700}
                 />
             ) : (
-                // <img
-                //     src={placeholderImage}
-                //     alt="placeholder for viola fingering diagram"
-                // />
-                <p>not yet available</p>
+                <img
+                    src={placeholderImage}
+                    alt="placeholder for viola fingering diagram"
+                />
+
             )
 
             }

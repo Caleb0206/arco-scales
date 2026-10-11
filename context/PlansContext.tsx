@@ -12,7 +12,9 @@ export type PlanDraft = {
 type PlansContextValue = {
     plans: Plan[];
     completedScaleNames: string[];
+    lastPracticedByScale: Record<string, string>;
     toggleScaleComplete: (scaleName: string) => void;
+    markScalePracticed: (scaleName: string) => void;
     restartPlan: (planId: string) => void;
     addPlan: (draft: PlanDraft) => string;
 };
@@ -73,12 +75,33 @@ export function PlansProvider({
         return newPlan.id;
     }
 
+    const [lastPracticedByScale, setLastPracticedByScale] =
+        useState<Record<string, string>>({});
+
+    function markScalePracticed(scaleName: string)
+    {
+        const now = new Date();
+
+        const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0"),
+        ].join("-");
+
+        setLastPracticedByScale((currentDates) => ({
+            ...currentDates,
+            [scaleName]: today,
+        }));
+    }
+
     return (
         <PlansContext.Provider
             value={{
                 plans,
                 completedScaleNames,
+                lastPracticedByScale,
                 toggleScaleComplete,
+                markScalePracticed,
                 restartPlan,
                 addPlan
             }}>
