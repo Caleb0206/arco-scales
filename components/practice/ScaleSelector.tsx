@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+
 import styles from "../../app/practice/page.module.css";
 import { Scale, type OctaveCount } from "@/data/scales";
 
@@ -7,6 +7,7 @@ type ScaleSelectorProps = {
     scales: Scale[];
     selectedScaleName: string;
     selectedOctaves: OctaveCount;
+    completedScaleNames: string[];
     onScaleChange: (scaleName: string) => void;
     onOctavesChange: (octave: OctaveCount) => void;
     label: string;
@@ -16,6 +17,7 @@ export default function ScaleSelector({
     scales,
     selectedOctaves,
     selectedScaleName,
+    completedScaleNames,
     onScaleChange,
     onOctavesChange,
     label,
@@ -30,11 +32,15 @@ export default function ScaleSelector({
                         id="scale" value={selectedScaleName}
                         onChange={(event) => onScaleChange(event.target.value)}
                     >
-                        {scales.map((scale) => (
-                            <option key={scale.name} value={scale.name}>
-                                {scale.name}
-                            </option>
-                        ))}
+                        {scales.map((scale) => {
+                            const isComplete = completedScaleNames.includes(scale.name);
+
+                            return (
+                                <option key={scale.name} value={scale.name}>
+                                    {scale.name}{isComplete ? " ✓" : ""}
+                                </option>
+                            )
+                        })}
                     </select>
                 </label>
                 <label className={styles.selectorField} htmlFor="octaves">

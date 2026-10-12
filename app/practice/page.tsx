@@ -125,7 +125,7 @@ export default function Practice() {
                             <p>
                                 You are working through <strong>{activePlan.name}</strong>.
                                 The scale selector only shows the {totalScales} scales in this plan.
-                                
+
                             </p>
                             <Link href="/scales">
                                 Leave plan and browse all scales.
@@ -137,6 +137,7 @@ export default function Practice() {
                         scales={availableScales}
                         selectedScaleName={selectedScaleName}
                         selectedOctaves={selectedOctaves}
+                        completedScaleNames={completedScaleNames}
                         onScaleChange={setSelectedSCaleName}
                         onOctavesChange={setSelectedOctaves}
                         label={activePlan ? "Scale in this plan" : "Scale"}
