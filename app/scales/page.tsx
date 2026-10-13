@@ -19,9 +19,9 @@ type Scale = {
 
 
 const scales: Scale[] = [
-    { name: "A Major", type: "major", accidentalCount: 3, lastPracticed: "2026-09-20" },
-    { name: "B Major", type: "major", accidentalCount: 5, lastPracticed: "2026-09-15" },
-    { name: "C Major", type: "major", accidentalCount: 0, lastPracticed: "2026-09-05" },
+    { name: "A Major", type: "major", accidentalCount: 3, lastPracticed: null },
+    { name: "B Major", type: "major", accidentalCount: 5, lastPracticed: null },
+    { name: "C Major", type: "major", accidentalCount: 0, lastPracticed: null },
     { name: "D Major", type: "major", accidentalCount: 2, lastPracticed: null },
     { name: "E Major", type: "major", accidentalCount: 4, lastPracticed: null },
     { name: "F Major", type: "major", accidentalCount: 1, lastPracticed: null },

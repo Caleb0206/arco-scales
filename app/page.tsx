@@ -1,7 +1,34 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Card from "@/components/Card";
+import { scales } from "@/data/scales";
+import { usePlans } from "@/context/PlansContext";
 
 export default function Home() {
+  const { completedScaleNames } = usePlans();
+
+  const practicedScales = scales.filter((scale) =>
+    completedScaleNames.includes(scale.name)
+  );
+
+  const [randomScaleHref, setRandomScaleHref] = useState("/scales");
+
+  useEffect(() => {
+    if (practicedScales.length === 0) {
+      setRandomScaleHref("/scales");
+      return;
+    }
+    const randomIndex = Math.floor(Math.random() * practicedScales.length);
+    const randomScale = practicedScales[randomIndex];
+
+    setRandomScaleHref(
+      `/practice?scale=${encodeURIComponent(randomScale.name)}`
+    );
+  }, [completedScaleNames]);
+
+
   return (
     <div className="background">
       <main>
@@ -26,9 +53,12 @@ export default function Home() {
           </Card>
           <Card
             title="Random Scale"
-            href="/"
+            href={randomScaleHref}
           >
-            <p>Let Arco Scales select your next scale to practice.</p>
+
+            <p>Review a randomly selected scale you have practiced before.</p>
+
+
           </Card>
           <Card
             title="Practice Summary"
