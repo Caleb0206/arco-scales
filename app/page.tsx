@@ -33,8 +33,7 @@ export default function Home() {
     <div className="background">
       <main>
         <div>
-          <h1>Arco Scales</h1>
-          <h2>Welcome back!</h2>
+          <h1>Welcome back!</h1>
 
         </div>
         <div className="card-row" aria-label="Practice options">
@@ -42,8 +41,9 @@ export default function Home() {
             title="Resume Practice"
             href="/practice"
           >
-            <p>D Major</p>
-            <p>Last tempo: ## BPM</p>
+            {/* <p>D Major</p>
+            <p>Last tempo: ## BPM</p> */}
+            <p>Continue</p>
           </Card>
           <Card
             title="Lesson Plans"
