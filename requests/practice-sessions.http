@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:3000
+@sessionId = 8a764236-54cf-4290-9321-ca7d200850f1
+
+### Create a completed practice session
+POST {{baseUrl}}/api/practice-sessions
+Content-Type: application/json
+
+{
+    "scaleName": "A Major",
+    "tempoBpm": 96,
+    "octaves": 2,
+    "success": true
+}
+
+### Get practice history
+GET {{baseUrl}}/api/practice-sessions
+
+### Get one practice session
+GET {{baseUrl}}/api/practice-sessions/{{sessionId}}
+
+### Update one practice session
+PUT {{baseUrl}}/api/practice-sessions/{{sessionId}}
+Content-Type: application/json
+
+{
+    "tempoBpm": 108,
+    "octaves": 1
+}
+
+### Delete one practice session
+DELETE {{baseUrl}}/api/practice-sessions/{{sessionId}}
