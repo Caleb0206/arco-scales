@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@sessionId = 8a764236-54cf-4290-9321-ca7d200850f1
+@sessionId = ffc1a642-8ead-4610-80d3-a39054736b52
 
 ### Create a completed practice session
 POST {{baseUrl}}/api/practice-sessions
