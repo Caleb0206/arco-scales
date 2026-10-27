@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "google-auth-library": "^11.3.1",
     "jose": "^6.2.13",
     "next": "16.3.5",
