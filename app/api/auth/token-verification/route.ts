@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
                 new URL("/", request.url),
                 303
             );
-            // store session in HTTP cookie
+            // store session in HTTP cookie, lasts 1 week
             response.cookies.set("arco_session", sessionToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",

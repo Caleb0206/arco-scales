@@ -8,6 +8,7 @@ if (!supabaseUrl || !supabaseSecretKey) {
 
 }
 
+// Create the supabase client
 export const supabase = createClient(
     supabaseUrl,
     supabaseSecretKey,

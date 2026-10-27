@@ -17,15 +17,17 @@ export type PlanDraft = {
 
 const plans: Plan[] = [];
 
+// gets the paln for user with userId
 export function getPlansForUser(userId: string) {
     return plans.filter((plan) => plan.userId === userId);
 }
 
+// get the plan from the plan's id
 export function getPlanById(planId: string) {
     return plans.find((plan) => plan.id === planId);
 }
 
-// POST Create
+// POST Create plan
 export function createPlan(userId: string, draft: PlanDraft) {
     const now = new Date().toISOString();
 
@@ -44,7 +46,7 @@ export function createPlan(userId: string, draft: PlanDraft) {
     return newPlan;
 };
 
-// PATCH Update
+// PATCH Update plan
 export function updatePlan(
     planId: string,
     userId: string,
@@ -76,6 +78,7 @@ export function updatePlan(
     return plan;
 }
 
+// Start/Restart a Plan
 export function startPlanRun(
     planId: string,
     userId: string,
@@ -98,6 +101,7 @@ export function startPlanRun(
     return plan;
 }
 
+// DELETE plan
 export function deletePlan(planId: string, userId: string) {
     const planIndex = plans.findIndex(
         (plan) => plan.id === planId && plan.userId === userId
