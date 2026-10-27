@@ -1,9 +1,12 @@
 @baseUrl = http://localhost:3000
-@sessionId = ffc1a642-8ead-4610-80d3-a39054736b52
+@sessionId = de37aaa8-ab7c-4d60-b93a-22f0402d7b62
+@cookie = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImNhbGViaHVhbmcwMjA2QGdtYWlsLmNvbSIsIm5hbWUiOiJDYWxlYiBIdWFuZyIsInN1YiI6IjEwMTU2ODYyNzM1OTczNTAxODQxOSIsImlhdCI6MTc5MzA3Nzk5NywiZXhwIjoxNzkzNjgyNzk3fQ.SXUTntuhiRJD-L1tNMYBx_NY6_Dgbz7VwZ_kqp58KHI
+
 
 ### Create a completed practice session
 POST {{baseUrl}}/api/practice-sessions
 Content-Type: application/json
+Cookie: arco_session={{cookie}}
 
 {
     "scaleName": "A Major",
@@ -14,13 +17,17 @@ Content-Type: application/json
 
 ### Get practice history
 GET {{baseUrl}}/api/practice-sessions
+Cookie: arco_session={{cookie}}
 
 ### Get one practice session
 GET {{baseUrl}}/api/practice-sessions/{{sessionId}}
+Cookie: arco_session={{cookie}}
 
 ### Update one practice session
 PUT {{baseUrl}}/api/practice-sessions/{{sessionId}}
 Content-Type: application/json
+Cookie: arco_session={{cookie}}
+
 
 {
     "tempoBpm": 108,

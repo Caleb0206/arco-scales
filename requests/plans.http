@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:3000
+@cookie = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImNhbGViaHVhbmcwMjA2QGdtYWlsLmNvbSIsIm5hbWUiOiJDYWxlYiBIdWFuZyIsInN1YiI6IjEwMTU2ODYyNzM1OTczNTAxODQxOSIsImlhdCI6MTc5MzA3Nzk5NywiZXhwIjoxNzkzNjgyNzk3fQ.SXUTntuhiRJD-L1tNMYBx_NY6_Dgbz7VwZ_kqp58KHI
+@planId = c4271748-f5f7-475d-a16f-62c93ef435bb
+### Create a plan
+POST {{baseUrl}}/api/plans
+Content-Type: application/json
+Cookie: arco_session={{cookie}}
+
+{
+    "name": "Major Foundations 34",
+    "description": "Practice common major scales.",
+    "scales": ["A Major", "D Major", "G Major"]
+}
+
+### Load one plan
+GET {{baseUrl}}/api/plans/{{planId}}
+Cookie: arco_session={{cookie}}
+
+### Update only the name and scales
+PATCH {{baseUrl}}/api/plans/{{planId}}
+Content-Type: application/json
+Cookie: arco_session={{cookie}}
+
+{
+    "name": "Updated Major Foundations 34",
+    "scales": [ "D Major", "G Major"]
+}
+
+### Delete one plan
+DELETE {{baseUrl}}/api/plans/{{planId}}
+Cookie: arco_session={{cookie}}

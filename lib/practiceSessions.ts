@@ -17,20 +17,25 @@ export type CreatePracticeSessionInput = {
 
 const practiceSessions: PracticeSession[] = [];
 
-export function getPracticeSessions() {
-    return practiceSessions;
+export function getPracticeSessions(userId: string) {
+    return practiceSessions.filter((session) => session.userId === userId);
 }
 
-export function getPracticeSession(sessionId: string) {
-    return practiceSessions.find((session) => session.id === sessionId);
+export function getPracticeSession(sessionId: string, userId: string) {
+    return practiceSessions.find(
+        (session) =>
+            session.id === sessionId &&
+            session.userId === userId
+    );
 }
 
 export function createPracticeSession(
+    userId: string,
     input: CreatePracticeSessionInput
 ) {
     const newSession: PracticeSession = {
         id: crypto.randomUUID(),
-        userId: "demo-user",
+        userId,
         scaleName: input.scaleName,
         tempoBpm: input.tempoBpm,
         octaves: input.octaves,
@@ -50,9 +55,10 @@ export type UpdatePracticeSessionInput = {
 
 export function updatePracticeSession(
     sessionId: string,
+    userId: string,
     input: UpdatePracticeSessionInput
 ) {
-    const practiceSession = getPracticeSession(sessionId);
+    const practiceSession = getPracticeSession(sessionId, userId);
 
     if (!practiceSession) {
         return undefined;
@@ -64,9 +70,14 @@ export function updatePracticeSession(
     return practiceSession;
 }
 
-export function deletePracticeSession(sessionId: string) {
+export function deletePracticeSession(
+    sessionId: string,
+    userId: string,
+) {
     const sessionIndex = practiceSessions.findIndex(
-        (session) => session.id === sessionId
+        (session) =>
+            session.id === sessionId &&
+            session.userId === userId
     );
 
     if (sessionIndex === -1) {
