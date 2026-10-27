@@ -3,6 +3,7 @@ import {
     deletePlan,
     getPlanById,
     updatePlan,
+    startPlanRun,
 } from "@/lib/plans";
 
 type RouteContext = {
@@ -52,6 +53,26 @@ export async function PATCH(
 
     const body = await request.json();
 
+    // starting a plan PATCH
+    if (body.action === "start" || body.action === "restart") {
+        const { planId } = await params;
+        const plan = startPlanRun(
+            planId,
+            currentUser.userId
+        );
+        if (!plan) {
+            return Response.json(
+                {
+                    error: "Plan not found."
+                },
+                { status: 404 }
+            );
+        }
+
+        return Response.json(plan);
+    }
+
+    // existing rename, description, scales PATCH 
     const name =
         typeof body.name === "string"
             ? body.name.trim()

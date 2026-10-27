@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000
 @cookie = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImNhbGViaHVhbmcwMjA2QGdtYWlsLmNvbSIsIm5hbWUiOiJDYWxlYiBIdWFuZyIsInN1YiI6IjEwMTU2ODYyNzM1OTczNTAxODQxOSIsImlhdCI6MTc5MzA3Nzk5NywiZXhwIjoxNzkzNjgyNzk3fQ.SXUTntuhiRJD-L1tNMYBx_NY6_Dgbz7VwZ_kqp58KHI
-@planId = c4271748-f5f7-475d-a16f-62c93ef435bb
+@planId = 41cd2d10-1ed8-443b-999c-9a7c97f69fcb
 ### Create a plan
 POST {{baseUrl}}/api/plans
 Content-Type: application/json
@@ -24,6 +24,15 @@ Cookie: arco_session={{cookie}}
 {
     "name": "Updated Major Foundations 34",
     "scales": [ "D Major", "G Major"]
+}
+
+### Restart a plan
+PATCH {{baseUrl}}/api/plans/{{planId}}
+Content-Type: application/json
+Cookie: arco_session={{cookie}}
+
+{
+    "action": "restart"
 }
 
 ### Delete one plan

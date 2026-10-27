@@ -6,6 +6,7 @@ export type Plan = {
     scales: string[];
     createdAt: string;
     updatedAt: string;
+    currentRunStartedAt: string | null;
 };
 
 export type PlanDraft = {
@@ -24,6 +25,7 @@ export function getPlanById(planId: string) {
     return plans.find((plan) => plan.id === planId);
 }
 
+// POST Create
 export function createPlan(userId: string, draft: PlanDraft) {
     const now = new Date().toISOString();
 
@@ -35,15 +37,14 @@ export function createPlan(userId: string, draft: PlanDraft) {
         scales: draft.scales,
         createdAt: now,
         updatedAt: now,
+        currentRunStartedAt: null,
     }
     plans.push(newPlan);
 
     return newPlan;
 };
 
-// PUT Update
-
-
+// PATCH Update
 export function updatePlan(
     planId: string,
     userId: string,
@@ -52,7 +53,7 @@ export function updatePlan(
     const plan = plans.find(
         (currentPlan) =>
             currentPlan.id === planId &&
-        currentPlan.userId === userId
+            currentPlan.userId === userId
     );
 
     if (!plan) {
@@ -67,12 +68,33 @@ export function updatePlan(
         plan.description = updates.description;
     }
 
-    if (updates.scales !== undefined)
-    {
+    if (updates.scales !== undefined) {
         plan.scales = updates.scales;
     }
     plan.updatedAt = new Date().toISOString();
-    
+
+    return plan;
+}
+
+export function startPlanRun(
+    planId: string,
+    userId: string,
+) {
+    const plan = plans.find(
+        (currentPlan) =>
+            currentPlan.id === planId &&
+            currentPlan.userId === userId
+    );
+
+    if (!plan) {
+        return null;
+    }
+
+    const now = new Date().toISOString();
+
+    plan.currentRunStartedAt = now;
+    plan.updatedAt = now;
+
     return plan;
 }
 
