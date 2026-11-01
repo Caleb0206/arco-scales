@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
 import Link from "next/link";
@@ -12,6 +12,14 @@ import FingeringDiagram from "@/components/practice/FingeringDiagram";
 import CompleteButton from "@/components/practice/CompleteButton";
 import { useSearchParams } from "next/navigation";
 import { usePlans } from "@/context/PlansContext";
+
+type Plan = {
+    id: string;
+    name: string;
+    description: string;
+    scales: string[];
+    currentRunStartedAt: string | null;
+};
 
 export default function Practice() {
     const [selectedOctaves, setSelectedOctaves] = useState<OctaveCount>(2);
@@ -28,14 +36,68 @@ export default function Practice() {
 
     // PlansContext shared plan and states
     const {
-        plans,
-        completedScaleNames,
-        toggleScaleComplete,
         markScalePracticed,
     } = usePlans();
 
     // Current plan exists only when URL includes a valid plan ID.
-    const activePlan = plans.find((plan) => plan.id === planId);
+    // const activePlan = plans.find((plan) => plan.id === planId);
+
+    const { completedScaleNames, toggleScaleComplete } = usePlans();
+
+    const [activePlan, setActivePlan] = useState<Plan | null>(null);
+    const [isPlanLoading, setIsPlanLoading] = useState(false);
+    const [planError, setPlanError] = useState<string | null>(null);
+
+    // lookup the plan
+    useEffect(() => {
+        if (!planId) {
+            setActivePlan(null);
+            setPlanError(null);
+            return;
+        }
+
+        async function loadActivePlan() {
+            setIsPlanLoading(true);
+            setPlanError(null);
+
+            try {
+                const response = await fetch(`/api/plans/${planId}`);
+
+                if (!response.ok) {
+                    throw new Error("Could not load practice plan.");
+                }
+
+                const plan: Plan = await response.json();
+
+                setActivePlan(plan);
+            } catch (error) {
+                setPlanError(
+                    error instanceof Error
+                        ? error.message
+                        : "Could not load practice plan."
+                );
+            } finally {
+                setIsPlanLoading(false);
+            }
+        }
+        void loadActivePlan();
+    }, [planId]);
+
+    // update the selected scale once it loads
+    useEffect(() => {
+        if (!activePlan) {
+            return;
+        }
+
+        const firstIncompleteScale =
+            activePlan.scales.find(
+                (scaleName) => !completedScaleNames.includes(scaleName)
+            ) ?? activePlan.scales[0];
+
+        if (firstIncompleteScale) {
+            setSelectedScaleName(firstIncompleteScale);
+        }
+    }, [activePlan?.id]);
 
     // In plan mode, begin with first scale that isn't complete.
     // else, use first scale
@@ -57,7 +119,7 @@ export default function Practice() {
         : requestedScale?.name ?? scales[0].name;
 
     // Local practice-page state: which scale is currently displayed.
-    const [selectedScaleName, setSelectedSCaleName] = useState(startingScaleName);
+    const [selectedScaleName, setSelectedScaleName] = useState(startingScaleName);
 
     // Find complete scale data object for current scale name
     const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
@@ -96,6 +158,13 @@ export default function Practice() {
                 <header className={styles.practiceHeader}>
                     <div className={styles.practiceHeaderText}>
                         <h1>Practice</h1>
+
+                        {isPlanLoading && (
+                            <p role="status">Loading practice plan...</p>
+                        )}
+                        {planError && (
+                            <p role="alert">{planError}</p>
+                        )}
 
                         <p className={styles.planContext}>
                             {activePlan
@@ -138,7 +207,7 @@ export default function Practice() {
                         selectedScaleName={selectedScaleName}
                         selectedOctaves={selectedOctaves}
                         completedScaleNames={completedScaleNames}
-                        onScaleChange={setSelectedSCaleName}
+                        onScaleChange={setSelectedScaleName}
                         onOctavesChange={setSelectedOctaves}
                         label={activePlan ? "Scale in this plan" : "Scale"}
                     />
