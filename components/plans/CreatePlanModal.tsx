@@ -54,6 +54,7 @@ export function CreatePlanModal({
     useEffect(() => {
         if (!isOpen) return;
 
+        // Escape Key logic
         function onKey(e: KeyboardEvent) {
             if (e.key === "Escape") onClose();
         }
@@ -61,6 +62,16 @@ export function CreatePlanModal({
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
     }, [isOpen, onClose]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        setTitle(plan?.name ?? "");
+        setDescription(plan?.description ?? "");
+        setSelectedScales(plan?.scales ?? []);
+        setSubmitError("");
+    }, [isOpen, mode, plan]);
+
 
     if (!isOpen) return null;
 
