@@ -1,6 +1,7 @@
 @baseUrl = http://localhost:3000
-@cookie = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImNhbGViaHVhbmcwMjA2QGdtYWlsLmNvbSIsIm5hbWUiOiJDYWxlYiBIdWFuZyIsInN1YiI6IjEwMTU2ODYyNzM1OTczNTAxODQxOSIsImlhdCI6MTc5MzA3Nzk5NywiZXhwIjoxNzkzNjgyNzk3fQ.SXUTntuhiRJD-L1tNMYBx_NY6_Dgbz7VwZ_kqp58KHI
-@planId = 41cd2d10-1ed8-443b-999c-9a7c97f69fcb
+@cookie = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImNhbGViaHVhbmcwMjA2QGdtYWlsLmNvbSIsIm5hbWUiOiJDYWxlYiBIdWFuZyIsInN1YiI6IjBiY2Y4NzFlLThmNzEtNDBlNC1iOWQxLWNiYmUzZDhmOWIwOSIsImlhdCI6MTc5MzQ5NTk2NCwiZXhwIjoxNzk0MTAwNzY0fQ.2br_og3m-VTNKv0mFBgkHk2TlfOKeWc6DitJqbooFB4
+@planId = f99becfa-6bf2-46a9-a6ca-f45d3ae681ac
+
 ### Create a plan
 POST {{baseUrl}}/api/plans
 Content-Type: application/json
@@ -11,6 +12,11 @@ Cookie: arco_session={{cookie}}
     "description": "Practice common major scales.",
     "scales": ["A Major", "D Major", "G Major"]
 }
+
+### List the user's plans
+GET {{baseUrl}}/api/plans
+Cookie: arco_session={{cookie}}
+
 
 ### Load one plan
 GET {{baseUrl}}/api/plans/{{planId}}

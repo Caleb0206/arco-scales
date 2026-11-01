@@ -26,7 +26,7 @@ export async function GET(
         );
     }
     const { planId } = await params;
-    const plan = getPlanById(planId);
+    const plan = await getPlanById(planId, currentUser.userId);
 
     if (!plan || plan.userId !== currentUser.userId) {
         return Response.json(
@@ -56,7 +56,7 @@ export async function PATCH(
     // starting a plan PATCH
     if (body.action === "start" || body.action === "restart") {
         const { planId } = await params;
-        const plan = startPlanRun(
+        const plan = await startPlanRun(
             planId,
             currentUser.userId
         );
@@ -122,7 +122,7 @@ export async function PATCH(
     }
 
     const { planId } = await params;
-    const updatedPlan = updatePlan(planId, currentUser.userId, {
+    const updatedPlan = await updatePlan(planId, currentUser.userId, {
         name,
         description,
         scales,
@@ -157,7 +157,7 @@ export async function DELETE(
     const { planId } = await params;
 
 
-    const deletedPlan = deletePlan(planId, currentUser.userId);
+    const deletedPlan = await deletePlan(planId, currentUser.userId);
 
     if (!deletedPlan) {
         return Response.json(

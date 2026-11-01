@@ -16,7 +16,7 @@ export async function GET() {
         );
     }
 
-    const plans = getPlansForUser(currentUser.userId);
+    const plans = await getPlansForUser(currentUser.userId);
     return Response.json(plans);
 }
 
