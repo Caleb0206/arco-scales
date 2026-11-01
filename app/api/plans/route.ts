@@ -62,7 +62,7 @@ export async function POST(request: Request) {
             { status: 400 }
         )
     }
-    const newPlan = createPlan(currentUser.userId, draft);
+    const newPlan = await createPlan(currentUser.userId, draft);
 
     return Response.json(newPlan, { status: 201 });
 }

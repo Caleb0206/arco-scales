@@ -83,6 +83,7 @@ export async function getPlansForUser(userId: string) {
     }
 
     const planRows = data as PlanRow[];
+
     const planScaleRows = await getPlanScales(
         planRows.map((plan) => plan.id)
     );
@@ -155,7 +156,13 @@ export async function createPlan(
         throw new Error(`Could not add scales to plan: ${scalesError.message}`);
     }
 
-    return getPlanById(planRow.id, userId);
+    const createdPlan = await getPlanById(planRow.id, userId);
+
+    if (!createdPlan) {
+        throw new Error("Plan was created but could not be loaded.");
+    }
+
+    return createdPlan;
 };
 
 // PATCH /api/plans/:planId Update plan

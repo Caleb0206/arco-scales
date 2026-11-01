@@ -12,7 +12,7 @@ type PlanDraft = {
 type CreatePlanModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (draft: PlanDraft) => void;
+    onSave: (draft: PlanDraft) => Promise<void>;
     mode: "create" | "edit";
     plan?: PlanDraft;
 };
@@ -45,6 +45,10 @@ export function CreatePlanModal({
     const [title, setTitle] = useState(() => plan?.name ?? "");
     const [description, setDescription] = useState(() => plan?.description ?? "");
     const [selectedScales, setSelectedScales] = useState<string[]>([]);
+
+    const [isSaving, setIsSaving] = useState(false);
+
+
     const header = mode === "create" ? "Create Plan" : "Edit Plan";
 
     useEffect(() => {
@@ -72,7 +76,9 @@ export function CreatePlanModal({
         });
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
+
+
         if (!title.trim()) {
             setSubmitError("Please enter a plan title.");
             return;
@@ -84,11 +90,23 @@ export function CreatePlanModal({
         }
         setSubmitError("");
 
-        onSave({
-            name: title.trim(),
-            description: description.trim(),
-            scales: selectedScales,
-        });
+        setIsSaving(true);
+        try {
+            await onSave({
+                name: title.trim(),
+                description: description.trim(),
+                scales: selectedScales,
+            });
+        } catch (error) {
+            setSubmitError(
+                error instanceof Error
+                    ? error.message
+                    : "Could not save plan."
+            );
+        } finally {
+            setIsSaving(false);
+        }
+
     }
 
     return (
@@ -169,8 +187,13 @@ export function CreatePlanModal({
                         <button type="button" value="cancel" onClick={onClose}>
                             Cancel
                         </button>
-                        <button type="submit" value="confirm" className="primary">
-                            Save
+                        <button
+                            type="submit"
+                            value="confirm"
+                            className="primary"
+                            disabled={isSaving}
+                        >
+                            {isSaving ? "Saving..." : "Save"}
                         </button>
                     </footer>
 
