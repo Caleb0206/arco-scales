@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 import styles from "./page.module.css";
 import { CreatePlanModal } from "@/components/plans/CreatePlanModal";
 import Link from "next/link";
-import { usePlans } from "@/context/PlansContext";
+
 
 type PlanDraft = {
     name: string;
@@ -22,6 +22,16 @@ type Plan = {
     currentRunStartedAt: string | null;
 };
 
+type PracticeSession = {
+    id: string;
+    userId: string;
+    scaleName: string;
+    octaves: number;
+    tempoBpm: number;
+    success: boolean;
+    practicedAt: string;
+}
+
 async function getErrorMessage(response: Response, fallback: string) {
     const body = await response
         .json()
@@ -31,7 +41,9 @@ async function getErrorMessage(response: Response, fallback: string) {
 }
 
 export default function Plans() {
-    const { completedScaleNames } = usePlans();
+    // PracticeSessions
+    const [practiceSessions, setPracticeSessions] = useState<PracticeSession[]>([]);
+
 
     // Plans from GET /api/plans
     const [plans, setPlans] = useState<Plan[]>([]);
@@ -60,20 +72,36 @@ export default function Plans() {
         setLoadError(null);
 
         try {
-            const response = await fetch("/api/plans");
+            const [plansResponse, sessionsResponse] = await Promise.all([
+                fetch("/api/plans"),
+                fetch("/api/practice-sessions"),
+            ]);
 
-            if (!response.ok) {
+            if (!plansResponse.ok) {
                 throw new Error(
                     await getErrorMessage(
-                        response,
+                        plansResponse,
                         "Could not load plans."
                     )
                 );
             }
 
-            const loadedPlans: Plan[] = await response.json();
+            if (!sessionsResponse.ok) {
+                throw new Error(
+                    await getErrorMessage(
+                        sessionsResponse,
+                        "Could not load practice history."
+                    )
+                );
+            }
+
+            const [loadedPlans, loadedSessions] = await Promise.all([
+                plansResponse.json() as Promise<Plan[]>,
+                sessionsResponse.json() as Promise<PracticeSession[]>,
+            ]);
 
             setPlans(loadedPlans);
+            setPracticeSessions(loadedSessions);
 
             setSelectedPlanId((currentPlanId) => {
                 const currentPlanStillExists = loadedPlans.some(
@@ -94,12 +122,32 @@ export default function Plans() {
         }
     }, []);
 
+    // Load plans on page load
     useEffect(() => {
         void loadPlans();
     }, [loadPlans]);
 
-
     const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? null;
+
+    const latestSessionByScale = new Map<string, PracticeSession>();
+
+    for (const session of practiceSessions) {
+        if (!latestSessionByScale.has(session.scaleName)) {
+            latestSessionByScale.set(session.scaleName, session);
+        }
+    }
+
+    // current run
+    const currentRunStartedAt = selectedPlan?.currentRunStartedAt
+        ? Date.parse(selectedPlan.currentRunStartedAt)
+        : null;
+
+    const completedScaleNames = Array.from(
+        latestSessionByScale.values()
+    )
+        .filter((session) => session.success)
+        .map((session) => session.scaleName);
+
 
     const completedCount = selectedPlan
         ? selectedPlan.scales.filter((scaleName) =>
@@ -148,6 +196,15 @@ export default function Plans() {
                     plan.id === updatedPlan.id
                         ? updatedPlan
                         : plan
+                )
+            );
+
+            // match UI state to the practice-session rows, restart endpoint in supabase
+            setPracticeSessions((currentSessions) =>
+                currentSessions.map((session) =>
+                    updatedPlan.scales.includes(session.scaleName)
+                        ? { ...session, success: false }
+                        : session
                 )
             );
         } catch (error) {

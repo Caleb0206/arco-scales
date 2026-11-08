@@ -21,7 +21,7 @@ type Plan = {
     currentRunStartedAt: string | null;
 };
 
-export type PracticeSession = {
+type PracticeSession = {
     id: string;
     userId: string;
     scaleName: string;

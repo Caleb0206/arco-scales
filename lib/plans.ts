@@ -131,6 +131,7 @@ export async function createPlan(
             user_id: userId,
             name: draft.name,
             description: draft.description,
+            current_run_started_at: now,
         })
         .select("*")
         .single();
@@ -240,24 +241,41 @@ export async function startPlanRun(
     planId: string,
     userId: string,
 ) {
+    // Load the plan first so we know which scale names to reset
+    const plan = await getPlanById(planId, userId);
+
+    if (!plan) {
+        return null;
+    }
+
     const now = new Date().toISOString();
 
-    const { data, error } = await supabase
+    // Keep the restart timestamp 
+    const { error: planError } = await supabase
         .from("plans")
         .update({
             current_run_started_at: now,
             updated_at: now,
         })
         .eq("id", planId)
-        .eq("user_id", userId)
-        .select("id")
-        .maybeSingle();
+        .eq("user_id", userId);
 
-    if (error) {
-        throw new Error(`Could not start plan run: ${error.message}`);
+    if (planError) {
+        throw new Error(`Could not start plan run: ${planError.message}`);
     }
-    if (!data) {
-        return null;
+    // Reset completion state for every scale in this plan.
+    // Scales with no practice-session row are already considered incomplete.
+    if (plan.scales.length > 0) {
+        const { error: sessionsError } = await supabase
+            .from("practice_session")
+            .update({ success: false })
+            .eq("user_id", userId)
+            .in("scale_name", plan.scales);
+        if (sessionsError) {
+            throw new Error(
+                `Could not reset plan progress: ${sessionsError.message}`
+            )
+        }
     }
 
     return getPlanById(planId, userId);
@@ -265,7 +283,7 @@ export async function startPlanRun(
 
 // DELETE /api/plans/:planId
 export async function deletePlan(
-    planId: string, 
+    planId: string,
     userId: string
 ) {
     const { data, error } = await supabase
@@ -278,7 +296,7 @@ export async function deletePlan(
     if (error) {
         throw new Error(`Could not delete plan: ${error.message}`);
     }
-    
+
     // removes matching plan_scales automatically because ON DELETE CASCADE
     return data !== null;
 }

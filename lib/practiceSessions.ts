@@ -116,6 +116,11 @@ export async function updatePracticeSession(
             tempo_bpm: input.tempoBpm,
             octaves: input.octaves,
             success: input.success,
+            // re-mark a scale's records to a new practice time
+            ...(input.success
+                ? { practiced_at: new Date().toISOString() }
+                : {}),
+            
         })
         .eq("id", sessionId)
         .eq("user_id", userId)
