@@ -1,27 +1,10 @@
 import { supabase } from "@/lib/supabase";
+import {
+    PracticeSession,
+    CreatePracticeSessionInput,
+    UpdatePracticeSessionInput
+} from "@/types/practice-session";
 
-export type PracticeSession = {
-    id: string;
-    userId: string;
-    scaleName: string;
-    octaves: number;
-    tempoBpm: number;
-    success: boolean;
-    practicedAt: string;
-}
-
-export type CreatePracticeSessionInput = {
-    scaleName: string;
-    octaves: 1 | 2 | 3;
-    tempoBpm: number;
-    success: boolean;
-}
-
-export type UpdatePracticeSessionInput = {
-    tempoBpm: number;
-    octaves: 1 | 2 | 3;
-    success: boolean;
-};
 
 type PracticeSessionRow = {
     id: string;
@@ -120,7 +103,7 @@ export async function updatePracticeSession(
             ...(input.success
                 ? { practiced_at: new Date().toISOString() }
                 : {}),
-            
+
         })
         .eq("id", sessionId)
         .eq("user_id", userId)

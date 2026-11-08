@@ -6,35 +6,11 @@ import ScaleFilters, {
     type ScaleType,
     type NumAccidentals,
 } from "@/components/scales/ScaleFilters";
-import { usePlans } from "@/context/PlansContext";
+import { scales } from "@/data/scales";
+import { usePracticeSessions } from "@/hooks/usePracticeSessions";
 import styles from "./page.module.css";
 
 
-type Scale = {
-    name: string;
-    type: ScaleType;
-    accidentalCount: number;
-    lastPracticed: string | null;
-}
-
-
-const scales: Scale[] = [
-    { name: "A Major", type: "major", accidentalCount: 3, lastPracticed: null },
-    { name: "B Major", type: "major", accidentalCount: 5, lastPracticed: null },
-    { name: "C Major", type: "major", accidentalCount: 0, lastPracticed: null },
-    { name: "D Major", type: "major", accidentalCount: 2, lastPracticed: null },
-    { name: "E Major", type: "major", accidentalCount: 4, lastPracticed: null },
-    { name: "F Major", type: "major", accidentalCount: 1, lastPracticed: null },
-    { name: "G Major", type: "major", accidentalCount: 1, lastPracticed: null },
-
-    { name: "A Minor", type: "minor", accidentalCount: 0, lastPracticed: null },
-    { name: "B Minor", type: "minor", accidentalCount: 2, lastPracticed: null },
-    { name: "C Minor", type: "minor", accidentalCount: 3, lastPracticed: null },
-    { name: "D Minor", type: "minor", accidentalCount: 1, lastPracticed: "2026-09-21" },
-    { name: "E Minor", type: "minor", accidentalCount: 1, lastPracticed: null },
-    { name: "F Minor", type: "minor", accidentalCount: 4, lastPracticed: null },
-    { name: "G Minor", type: "minor", accidentalCount: 2, lastPracticed: null },
-];
 
 export default function Scales() {
     const {lastPracticedByScale} = usePlans();

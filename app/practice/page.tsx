@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
 import Link from "next/link";
@@ -11,7 +11,7 @@ import Metronome from "@/components/practice/Metronome";
 import FingeringDiagram from "@/components/practice/FingeringDiagram";
 import CompleteButton from "@/components/practice/CompleteButton";
 import { useSearchParams } from "next/navigation";
-
+import { usePracticeSessions } from "@/hooks/usePracticeSessions";
 
 type Plan = {
     id: string;
@@ -21,88 +21,11 @@ type Plan = {
     currentRunStartedAt: string | null;
 };
 
-type PracticeSession = {
-    id: string;
-    userId: string;
-    scaleName: string;
-    octaves: number;
-    tempoBpm: number;
-    success: boolean;
-    practicedAt: string;
-}
-
-async function getErrorMessage(response: Response, fallback: string) {
-    const body = await response
-        .json()
-        .catch(() => null) as { error?: string } | null;
-
-    return body?.error ?? fallback;
-}
-
 export default function Practice() {
-    // PracticeSessions from GET /api/practice-session
-    const [practiceSessions, setPracticeSessions] = useState<PracticeSession[]>([]);
 
-    // Loading api states
-    const [isSessionsLoading, setIsSessionsLoading] = useState(true);
-    const [sessionsError, setSessionsError] = useState<string | null>(null);
-    const [isCompleting, setIsCompleting] = useState(false);
-
-    const [completionError, setCompletionError] = useState<string | null>(null);
-
-
-    const loadPracticeSessions = useCallback(async () => {
-        setIsSessionsLoading(true);
-        setSessionsError(null);
-
-        try {
-            const response = await fetch("/api/practice-sessions");
-
-            if (!response.ok) {
-                throw new Error(
-                    await getErrorMessage(
-                        response,
-                        "Could not load practice history.."
-                    )
-                );
-            }
-
-            const loadedSessions: PracticeSession[] = await response.json();
-
-            setPracticeSessions(loadedSessions);
-        } catch (error) {
-            setSessionsError(error instanceof Error
-                ? error.message
-                : "Could not load practice history."
-            );
-        } finally {
-            setIsSessionsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        void loadPracticeSessions();
-    }, [loadPracticeSessions]);
-
-    const latestSessionByScale = new Map<string, PracticeSession>();
-
-    for (const session of practiceSessions) {
-        if (!latestSessionByScale.has(session.scaleName)) {
-            latestSessionByScale.set(session.scaleName, session);
-        }
-    }
-
-    const completedScaleNames = Array.from(
-        latestSessionByScale.values()
-    )
-        .filter((session) => session.success)
-        .map((session) => session.scaleName);
-
-
-
-
-    const [selectedOctaves, setSelectedOctaves] = useState<OctaveCount>(2);
-    const [selectedBpm, setSelectedBpm] = useState(80);
+    /* ---------------------------------- */
+    // Route Context
+    /* ---------------------------------- */
 
     // URL values determine if user arrived from ScaleLibrary or practice plan
     const searchParams = useSearchParams();
@@ -114,17 +37,74 @@ export default function Practice() {
         (scale) => scale.name === requestedScaleName
     );
 
+    /* ---------------------------------- */
+    // Persisted practice-session data
+    /* ---------------------------------- */
+
+    const {
+        latestSessionByScale,
+        completedScaleNames,
+        isSessionsLoading,
+        sessionsError,
+        loadPracticeSessions,
+        createSession,
+        updateSession,
+    } = usePracticeSessions();
+
+    /* ---------------------------------- */
+    // Local page/UI states
+    /* ---------------------------------- */
+    
+    // Local practice-page state: which scale is currently displayed.
+    const [selectedScaleName, setSelectedScaleName] = useState(
+        requestedScale?.name ?? scales[0].name
+    );
+
+    const [selectedOctaves, setSelectedOctaves] = useState<OctaveCount>(2);
+    const [selectedBpm, setSelectedBpm] = useState(80);
 
     // Current plan exists only when URL includes a valid plan ID.
-    // const activePlan = plans.find((plan) => plan.id === planId);
-
-
-
     const [activePlan, setActivePlan] = useState<Plan | null>(null);
     const [isPlanLoading, setIsPlanLoading] = useState(false);
     const [planError, setPlanError] = useState<string | null>(null);
 
-    // lookup the plan
+    // Local UI state for the mobile fingering-diagram overlay
+    const [isDiagramOpen, setIsDiagramOpen] = useState(false);
+
+    const [isCompleting, setIsCompleting] = useState(false);
+    const [completionError, setCompletionError] = useState<string | null>(null);
+
+    /* ---------------------------------- */
+    // Derived values
+    /* ---------------------------------- */
+    // Find complete scale data object for current scale name
+    const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
+
+    // Plan mode limits selector scales. Free practice allows everything
+    const availableScales = activePlan
+        ? scales.filter((scale) => activePlan.scales.includes(scale.name))
+        : scales;
+
+    // Derived plan progress values for header and progress display
+    const totalScales = activePlan?.scales.length ?? 0;
+
+    // Completed count of scales per active plan
+    const completedCount = activePlan
+        ? activePlan.scales.filter((scaleName) =>
+            completedScaleNames.includes(scaleName)
+        ).length
+        : 0;
+
+    const currentScaleSession = latestSessionByScale.get(selectedScale.name);
+
+    // Whether currently displayed scale is marked complete
+    const isCurrentScaleComplete = completedScaleNames.includes(selectedScale.name);
+
+    /* ---------------------------------- */
+    // Effects
+    /* ---------------------------------- */
+
+    // Load the selected plan only when the URL includes ?plan=<id>
     useEffect(() => {
         if (!planId) {
             setActivePlan(null);
@@ -159,7 +139,7 @@ export default function Practice() {
         void loadActivePlan();
     }, [planId]);
 
-    // update the selected scale once it loads
+    // In plan mode, select the first incomplete scale automatically
     useEffect(() => {
         if (!activePlan) {
             return;
@@ -175,140 +155,51 @@ export default function Practice() {
         }
     }, [activePlan?.id]);
 
-    // In plan mode, begin with first scale that isn't complete.
-    // else, use first scale
-    const planStartingScaleName =
-        activePlan?.scales.find(
-            (scaleName) => !completedScaleNames.includes(scaleName)
 
-        ) ??
-        activePlan?.scales[0];
-
-    /*
-    Decide the initial scale:
-    - Plan mode: plan's starting scale
-    - Free practice: scale from Scale Library
-    - Fallback: first scale in the database
-    */
-    const startingScaleName = activePlan
-        ? planStartingScaleName ?? scales[0].name
-        : requestedScale?.name ?? scales[0].name;
-
-    // Local practice-page state: which scale is currently displayed.
-    const [selectedScaleName, setSelectedScaleName] = useState(startingScaleName);
-
-    // Find complete scale data object for current scale name
-    const selectedScale = scales.find((scale) => scale.name === selectedScaleName) ?? scales[0];
-
-    // Plan mode limits selector scales. Free practice allows everything
-    const availableScales = activePlan
-        ? scales.filter((scale) => activePlan.scales.includes(scale.name))
-        : scales;
-
-    // Local UI state for the mobile fingering-diagram overlay
-    const [isDiagramOpen, setIsDiagramOpen] = useState(false);
-
-    // Derived plan progress values for header and progress display
-    const totalScales = activePlan?.scales.length ?? 0;
-
-    const completedCount = activePlan
-        ? activePlan.scales.filter((scaleName) =>
-            completedScaleNames.includes(scaleName)
-        ).length
-        : 0;
-
-    const currentScaleSession = latestSessionByScale.get(selectedScale.name);
-
-    // Whether currently displayed scale is marked complete
-    const isCurrentScaleComplete = completedScaleNames.includes(selectedScale.name);
-
+    /* --------------------------------- */
+    // Event handlers
+    /* --------------------------------- */
 
     // Mark or unmark the selected scale
     async function handleComplete() {
         if (isCompleting) {
             return;
         }
-
         setIsCompleting(true);
         setCompletionError(null);
 
         try {
+            // If a session already exists, update it.
             if (currentScaleSession) {
-                // Existing record: toggle completion state and Update!
-                const response = await fetch(`/api/practice-sessions/${currentScaleSession.id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        tempoBpm: selectedBpm,
-                        octaves: selectedOctaves,
-                        success: !isCurrentScaleComplete,
-                    }),
-                });
-
-                if (!response.ok) {
-                    throw new Error(
-                        await getErrorMessage(
-                            response,
-                            "Could not update this practice session."
-                        )
-                    );
-                }
-
-                const updatedSession: PracticeSession = await response.json();
-
-                // update screen immediately
-                setPracticeSessions((currentSessions) =>
-                    currentSessions.map((session) =>
-                        session.id === updatedSession.id
-                            ? updatedSession
-                            : session
-                    )
-                );
-                return;
-            }
-
-            // Create if it's the first completion for this scale
-            const response = await fetch("/api/practice-sessions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    scaleName: selectedScale.name,
+                await updateSession(currentScaleSession.id, {
                     tempoBpm: selectedBpm,
                     octaves: selectedOctaves,
-                    success: true,
-                }),
-            });
-            if (!response.ok) {
-                throw new Error(
-                    await getErrorMessage(
-                        response,
-                        "Could not mark this scale complete."
-                    )
-                );
+                    success: !isCurrentScaleComplete,
+                });
+                return;
             }
-
-            const newSession: PracticeSession = await response.json();
-
-            // update screen immediately
-            setPracticeSessions((currentSessions) => [
-                newSession,
-                ...currentSessions,
-            ]);
+            // otherwise, create new session
+            await createSession({
+                scaleName: selectedScale.name,
+                tempoBpm: selectedBpm,
+                octaves: selectedOctaves,
+                success: true,
+            });
         } catch (error) {
             setCompletionError(
                 error instanceof Error
                     ? error.message
-                    : "Could not mark this scale complete."
+                    : "Could not update this practice session."
             );
         } finally {
             setIsCompleting(false);
         }
+
     }
 
+    /* --------------------------------- */
+    // Rendering
+    /* --------------------------------- */
     return (
         <div>
             <main className={styles.practiceWorkspace}>
@@ -330,7 +221,7 @@ export default function Practice() {
                                 <p>{sessionsError}</p>
                                 <button
                                     type="button"
-                                    onClick={() => void loadPracticeSessions}
+                                    onClick={() => void loadPracticeSessions()}
                                 >
                                     Try again
                                 </button>

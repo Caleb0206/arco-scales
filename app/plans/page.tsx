@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 import styles from "./page.module.css";
 import { CreatePlanModal } from "@/components/plans/CreatePlanModal";
 import Link from "next/link";
+import { getErrorMessage } from "@/lib/api";
 
 
 type PlanDraft = {
@@ -32,13 +33,7 @@ type PracticeSession = {
     practicedAt: string;
 }
 
-async function getErrorMessage(response: Response, fallback: string) {
-    const body = await response
-        .json()
-        .catch(() => null) as { error?: string } | null;
 
-    return body?.error ?? fallback;
-}
 
 export default function Plans() {
     // PracticeSessions
