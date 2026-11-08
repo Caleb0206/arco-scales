@@ -33,7 +33,7 @@ type PlanScaleRow = {
     sort_order: number;
 }
 
-/* Conver database names to camelCase Plan shape */
+/* Convert database names to camelCase Plan shape */
 function toPlan(
     row: PlanRow,
     planScaleRows: PlanScaleRow[]

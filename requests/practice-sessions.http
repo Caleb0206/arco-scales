@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000
-@sessionId = de37aaa8-ab7c-4d60-b93a-22f0402d7b62
-@cookie = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImNhbGViaHVhbmcwMjA2QGdtYWlsLmNvbSIsIm5hbWUiOiJDYWxlYiBIdWFuZyIsInN1YiI6IjEwMTU2ODYyNzM1OTczNTAxODQxOSIsImlhdCI6MTc5MzA3Nzk5NywiZXhwIjoxNzkzNjgyNzk3fQ.SXUTntuhiRJD-L1tNMYBx_NY6_Dgbz7VwZ_kqp58KHI
+@sessionId = 3ff44c90-9c34-48ea-91d2-efe6a2503029
+@cookie = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImNhbGViaHVhbmcwMjA2QGdtYWlsLmNvbSIsIm5hbWUiOiJDYWxlYiBIdWFuZyIsInN1YiI6IjBiY2Y4NzFlLThmNzEtNDBlNC1iOWQxLWNiYmUzZDhmOWIwOSIsImlhdCI6MTc5NDExNjc3MCwiZXhwIjoxNzk0NzIxNTcwfQ.h-riP9KvuMWQKh3gbqvYkjmIZLgIqIJGMCZAS4bU-OY
 
 
 ### Create a completed practice session
@@ -31,8 +31,10 @@ Cookie: arco_session={{cookie}}
 
 {
     "tempoBpm": 108,
-    "octaves": 1
+    "octaves": 1,
+    "success": true
 }
 
 ### Delete one practice session
 DELETE {{baseUrl}}/api/practice-sessions/{{sessionId}}
+Cookie: arco_session={{cookie}}

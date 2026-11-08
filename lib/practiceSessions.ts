@@ -1,3 +1,5 @@
+import { supabase } from "@/lib/supabase";
+
 export type PracticeSession = {
     id: string;
     userId: string;
@@ -15,76 +17,138 @@ export type CreatePracticeSessionInput = {
     success: boolean;
 }
 
-const practiceSessions: PracticeSession[] = [];
+export type UpdatePracticeSessionInput = {
+    tempoBpm: number;
+    octaves: 1 | 2 | 3;
+    success: boolean;
+};
 
-export function getPracticeSessions(userId: string) {
-    return practiceSessions.filter((session) => session.userId === userId);
+type PracticeSessionRow = {
+    id: string;
+    user_id: string;
+    scale_name: string;
+    octaves: number;
+    tempo_bpm: number;
+    success: boolean;
+    practiced_at: string;
+};
+
+/* Convert database names to camelCase Plan shape */
+function toPracticeSession(row: PracticeSessionRow): PracticeSession {
+
+    return {
+        id: row.id,
+        userId: row.user_id,
+        scaleName: row.scale_name,
+        octaves: row.octaves,
+        tempoBpm: row.tempo_bpm,
+        success: row.success,
+        practicedAt: row.practiced_at
+    };
 }
 
-export function getPracticeSession(sessionId: string, userId: string) {
-    return practiceSessions.find(
-        (session) =>
-            session.id === sessionId &&
-            session.userId === userId
-    );
+export async function getPracticeSessions(userId: string) {
+    const { data, error } = await supabase
+        .from("practice_session")
+        .select("*")
+        .eq("user_id", userId)
+        .order("practiced_at", { ascending: false });
+
+    if (error) {
+        throw new Error(`Could not load practice sessions: ${error.message}`);
+    }
+
+    return (data as PracticeSessionRow[]).map(toPracticeSession);
+
 }
 
-export function createPracticeSession(
+// GET one practice session: 
+export async function getPracticeSession(sessionId: string, userId: string) {
+    const { data, error } = await supabase
+        .from("practice_session")
+        .select("*")
+        .eq("id", sessionId)
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (error) {
+        throw new Error(`Could not load practice session: ${error.message}`);
+    }
+
+    return data
+        ? toPracticeSession(data as PracticeSessionRow)
+        : null;
+}
+
+// POST: supabase create practice session, generates an id and practiced_at
+export async function createPracticeSession(
     userId: string,
     input: CreatePracticeSessionInput
 ) {
-    const newSession: PracticeSession = {
-        id: crypto.randomUUID(),
-        userId,
-        scaleName: input.scaleName,
-        tempoBpm: input.tempoBpm,
-        octaves: input.octaves,
-        success: input.success,
-        practicedAt: new Date().toISOString(),
+    const { data, error } = await supabase
+        .from("practice_session")
+        .insert({
+            user_id: userId,
+            scale_name: input.scaleName,
+            octaves: input.octaves,
+            tempo_bpm: input.tempoBpm,
+            success: input.success,
+        })
+        .select("*")
+        .single();
+
+    if (error) {
+        throw new Error(`Could not create practice session: ${error.message}`);
     }
-    practiceSessions.unshift(newSession);
 
-    return newSession;
+    return toPracticeSession(data as PracticeSessionRow);
 };
 
-// PUT Update
-export type UpdatePracticeSessionInput = {
-    tempoBpm: number;
-    octaves: number;
-};
-
-export function updatePracticeSession(
+// PUT: Update only this user's matching data
+export async function updatePracticeSession(
     sessionId: string,
     userId: string,
     input: UpdatePracticeSessionInput
 ) {
-    const practiceSession = getPracticeSession(sessionId, userId);
+    const { data, error } = await supabase
+        .from("practice_session")
+        .update({
+            tempo_bpm: input.tempoBpm,
+            octaves: input.octaves,
+            success: input.success,
+        })
+        .eq("id", sessionId)
+        .eq("user_id", userId)
+        .select("*")
+        .maybeSingle();
 
-    if (!practiceSession) {
-        return undefined;
+    if (error) {
+        throw new Error(`Could not update practice session: ${error.message}`);
     }
 
-    practiceSession.tempoBpm = input.tempoBpm;
-    practiceSession.octaves = input.octaves;
-
-    return practiceSession;
+    return data
+        ? toPracticeSession(data as PracticeSessionRow)
+        : null;
 }
 
-export function deletePracticeSession(
+// DELETE: return the deleted session, null if didn't belong to the user
+export async function deletePracticeSession(
     sessionId: string,
     userId: string,
 ) {
-    const sessionIndex = practiceSessions.findIndex(
-        (session) =>
-            session.id === sessionId &&
-            session.userId === userId
-    );
+    const { data, error } = await supabase
+        .from("practice_session")
+        .delete()
+        .eq("id", sessionId)
+        .eq("user_id", userId)
+        .select("*")
+        .maybeSingle();
 
-    if (sessionIndex === -1) {
-        return undefined;
+    if (error) {
+        throw new Error(`Could not delete practice session: ${error.message}`);
     }
 
-    const [deletedSession] = practiceSessions.splice(sessionIndex, 1);
-
-    return deletedSession;
+    return data
+        ? toPracticeSession(data as PracticeSessionRow)
+        : null;
 }

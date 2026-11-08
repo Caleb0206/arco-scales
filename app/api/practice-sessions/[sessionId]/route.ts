@@ -13,7 +13,7 @@ type RouteContext = {
 
 // GET function
 export async function GET(
-    request: Request,
+    _request: Request,
     { params }: RouteContext
 ) {
     const currentUser = await getCurrentUser();
@@ -27,7 +27,7 @@ export async function GET(
 
     const { sessionId } = await params;
 
-    const practiceSession = getPracticeSession(sessionId, currentUser.userId);
+    const practiceSession = await getPracticeSession(sessionId, currentUser.userId);
 
     if (!practiceSession) {
         return Response.json(
@@ -56,20 +56,30 @@ export async function PUT(
     const { sessionId } = await params;
     const body = await request.json();
 
+    const tempoBpm = body.tempoBpm;
+    const octaves = body.octaves;
+
     if (
-        typeof body.tempoBpm !== "number" || typeof body.octaves !== "number"
+        typeof tempoBpm !== "number" ||
+        !Number.isFinite(tempoBpm) ||
+        tempoBpm <= 0 ||
+        !Number.isInteger(octaves) ||
+        ![1, 2, 3].includes(octaves) ||
+        typeof body.success !== "boolean"
     ) {
         return Response.json(
-            { error: "tempoBpm and octaves must be numbers." },
+            { error: "tempoBpm must be positive, octaves must be 1, 2, or 3, and success must be a boolean." },
             { status: 400 }
         );
     }
-    const updatedSession = updatePracticeSession(
-        sessionId, 
+
+    const updatedSession = await updatePracticeSession(
+        sessionId,
         currentUser.userId,
         {
-            tempoBpm: body.tempoBpm,
-            octaves: body.octaves,
+            tempoBpm,
+            octaves: octaves as 1 | 2 | 3,
+            success: body.success,
         });
 
     if (!updatedSession) {
@@ -98,7 +108,7 @@ export async function DELETE(
 
     const { sessionId } = await params;
 
-    const deletedSession = deletePracticeSession(sessionId, currentUser.userId);
+    const deletedSession = await deletePracticeSession(sessionId, currentUser.userId);
 
     if (!deletedSession) {
         return Response.json(

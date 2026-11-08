@@ -3,8 +3,15 @@ import { useState, useRef, useEffect } from "react";
 import styles from "../../app/practice/page.module.css";
 import Image from "next/image";
 
-export default function Metronome() {
-    const [selectedBPM, setSelectedBPM] = useState(80);
+type MetronomeProps = {
+    selectedBpm: number;
+    onBpmChange: (bpm: number) => void;
+};
+
+export default function Metronome({
+    selectedBpm,
+    onBpmChange
+}: MetronomeProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isBeatActive, setIsBeatActive] = useState(false);
 
@@ -16,7 +23,7 @@ export default function Metronome() {
         }
 
         const audioContext = audioContextRef.current;
-        const millisecondsPerBeat = 60_000 / selectedBPM;
+        const millisecondsPerBeat = 60_000 / selectedBpm;
         function playBeat() {
             const oscillator = audioContext.createOscillator();
             const gain = audioContext.createGain();
@@ -49,7 +56,7 @@ export default function Metronome() {
         return () => {
             window.clearInterval(intervalId);
         };
-    }, [isPlaying, selectedBPM]);
+    }, [isPlaying, selectedBpm]);
 
     async function handlePlayToggle() {
         if (isPlaying) {
@@ -101,8 +108,8 @@ export default function Metronome() {
                         min="30"
                         max="240"
                         step="1"
-                        value={selectedBPM}
-                        onChange={(event) => setSelectedBPM(Number(event.target.value))}
+                        value={selectedBpm}
+                        onChange={(event) => onBpmChange(Number(event.target.value))}
                     />
                 </label>
             </div>

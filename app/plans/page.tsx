@@ -332,7 +332,7 @@ export default function Plans() {
                                     type="button"
                                     key={plan.id}
                                     aria-pressed={plan.id === selectedPlanId}
-                                    onClick={() => setSelectedPlanId(plan.id)}
+                                    onClick={() => setSelectedPlanId(plan.id)} // CHANGE to an OnClick method
                                 >
                                     {plan.name}
                                 </button>
@@ -360,7 +360,7 @@ export default function Plans() {
                                     {actionError}
                                 </p>
                             )}
-
+                            {/* CHANGE: Componentize this  */}
                             <div className={styles.planProgress} aria-labelledby="plan-progress-heading">
                                 <h3 id="plan-progress-heading">Plan progress</h3>
 
