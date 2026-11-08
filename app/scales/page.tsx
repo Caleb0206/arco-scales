@@ -13,7 +13,12 @@ import styles from "./page.module.css";
 
 
 export default function Scales() {
-    const {lastPracticedByScale} = usePlans();
+    const {
+        latestSessionByScale,
+        isSessionsLoading,
+        sessionsError,
+        loadPracticeSessions,
+    } = usePracticeSessions();
 
     const [selectedTypes, setSelectedTypes] = useState<Record<ScaleType, boolean>>({
         major: true,
@@ -58,10 +63,17 @@ export default function Scales() {
         });
     }
 
-    function getDaysSince(date: string) {
-        const [year, month, day] = date.split("-").map(Number);
-        const practicedDay = Date.UTC(year, month - 1, day);
+    function getDaysSince(practicedAt: string) {
+
+        const practicedDate = new Date(practicedAt);
         const today = new Date();
+
+        const practicedDay = Date.UTC(
+            practicedDate.getFullYear(),
+            practicedDate.getMonth(),
+            practicedDate.getDate()
+        );
+
         const todayStart = Date.UTC(
             today.getFullYear(),
             today.getMonth(),
@@ -109,7 +121,21 @@ export default function Scales() {
                 <div>
                     <h1>Scale Library</h1>
                     <p>Browse available scales!</p>
+                    {isSessionsLoading && (
+                        <p role="status">Loading practice history...</p>
+                    )}
 
+                    {sessionsError && (
+                        <div role="alert">
+                            <p>{sessionsError}</p>
+                            <button
+                                type="button"
+                                onClick={() => void loadPracticeSessions()}
+                            >
+                                Try again
+                            </button>
+                        </div>
+                    )}
                     <ScaleFilters
                         selectedTypes={selectedTypes}
                         selectedAccidentals={selectedAccidentals}
@@ -120,7 +146,7 @@ export default function Scales() {
 
                     <ul className={styles.scaleLibraryList}>
                         {visibleScales.map((scale) => {
-                            const lastPracticed = lastPracticedByScale[scale.name] ?? scale.lastPracticed;
+                            const lastPracticed = latestSessionByScale.get(scale.name)?.practicedAt ?? null;
 
                             const practiceStatus = getPracticeStatus(lastPracticed);
 
