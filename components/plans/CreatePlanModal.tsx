@@ -1,13 +1,7 @@
 "use client";
 import styles from "./modal.module.css";
 import { useEffect, useState } from "react";
-
-
-type PlanDraft = {
-    name: string;
-    description: string;
-    scales: string[];
-};
+import type { PlanDraft } from "@/types/plan";
 
 type CreatePlanModalProps = {
     isOpen: boolean;

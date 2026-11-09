@@ -1,21 +1,5 @@
 import { supabase } from "@/lib/supabase";
-
-export type Plan = {
-    id: string;
-    userId: string;
-    name: string;
-    description: string;
-    scales: string[];
-    createdAt: string;
-    updatedAt: string;
-    currentRunStartedAt: string | null;
-};
-
-export type PlanDraft = {
-    name: string;
-    description: string;
-    scales: string[];
-};
+import type { Plan, PlanDraft } from "@/types/plan";
 
 type PlanRow = {
     id: string;

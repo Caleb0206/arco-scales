@@ -1,148 +1,63 @@
 "use client";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 import { CreatePlanModal } from "@/components/plans/CreatePlanModal";
 import Link from "next/link";
-import { getErrorMessage } from "@/lib/api";
-
-
-type PlanDraft = {
-    name: string;
-    description: string;
-    scales: string[];
-};
-
-type Plan = {
-    id: string;
-    userId: string;
-    name: string;
-    description: string;
-    scales: string[];
-    createdAt: string;
-    updatedAt: string;
-    currentRunStartedAt: string | null;
-};
-
-type PracticeSession = {
-    id: string;
-    userId: string;
-    scaleName: string;
-    octaves: number;
-    tempoBpm: number;
-    success: boolean;
-    practicedAt: string;
-}
-
+import { usePlansApi } from "@/hooks/usePlansApi";
+import { usePracticeSessions } from "@/hooks/usePracticeSessions";
+import type { Plan, PlanDraft } from "@/types/plan";
 
 
 export default function Plans() {
-    // PracticeSessions
-    const [practiceSessions, setPracticeSessions] = useState<PracticeSession[]>([]);
+    /* ---------------------------------- */
+    // API data
+    /* ---------------------------------- */
+
+    const {
+        plans,
+        isPlansLoading,
+        plansError,
+        loadPlans,
+        createPlan,
+        updatePlan,
+        restartPlan,
+        deletePlan,
+    } = usePlansApi();
+
+    const {
+        completedScaleNames,
+        isSessionsLoading,
+        sessionsError,
+        loadPracticeSessions,
+    } = usePracticeSessions();
 
 
-    // Plans from GET /api/plans
-    const [plans, setPlans] = useState<Plan[]>([]);
+
+    /* ----------------------------------- */
+    // Local page/UI specfic states
+    /* ----------------------------------- */
+
     const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+    // Editing plan state
+    const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
 
-    // Loading api states
-    const [isLoading, setIsLoading] = useState(true);
-    const [loadError, setLoadError] = useState<string | null>(null);
+    // CreatePlanModal state
+    const [showCreatePlanModal, setShowCreatePlanModal] = useState(false);
 
     // Restart a plan state
     const [isRestarting, setIsRestarting] = useState(false);
     const [actionError, setActionError] = useState<string | null>(null);
 
-    // Editing plan state
-    const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
-
     // Deleting plan state
     const [isDeleting, setIsDeleting] = useState(false);
 
-
-    // CreatePlanModal state
-    const [showCreatePlanModal, setShowCreatePlanModal] = useState(false);
-
-    const loadPlans = useCallback(async () => {
-        setIsLoading(true);
-        setLoadError(null);
-
-        try {
-            const [plansResponse, sessionsResponse] = await Promise.all([
-                fetch("/api/plans"),
-                fetch("/api/practice-sessions"),
-            ]);
-
-            if (!plansResponse.ok) {
-                throw new Error(
-                    await getErrorMessage(
-                        plansResponse,
-                        "Could not load plans."
-                    )
-                );
-            }
-
-            if (!sessionsResponse.ok) {
-                throw new Error(
-                    await getErrorMessage(
-                        sessionsResponse,
-                        "Could not load practice history."
-                    )
-                );
-            }
-
-            const [loadedPlans, loadedSessions] = await Promise.all([
-                plansResponse.json() as Promise<Plan[]>,
-                sessionsResponse.json() as Promise<PracticeSession[]>,
-            ]);
-
-            setPlans(loadedPlans);
-            setPracticeSessions(loadedSessions);
-
-            setSelectedPlanId((currentPlanId) => {
-                const currentPlanStillExists = loadedPlans.some(
-                    (plan) => plan.id === currentPlanId
-                );
-
-                return currentPlanStillExists
-                    ? currentPlanId
-                    : loadedPlans[0]?.id ?? null;
-            });
-        } catch (error) {
-            setLoadError(error instanceof Error
-                ? error.message
-                : "Could not load plans."
-            );
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    // Load plans on page load
-    useEffect(() => {
-        void loadPlans();
-    }, [loadPlans]);
+    /* ---------------------------------- */
+    // Derived values
+    /* ---------------------------------- */
+    const isLoading = isPlansLoading || isSessionsLoading;
+    const loadError = plansError ?? sessionsError;
 
     const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? null;
-
-    const latestSessionByScale = new Map<string, PracticeSession>();
-
-    for (const session of practiceSessions) {
-        if (!latestSessionByScale.has(session.scaleName)) {
-            latestSessionByScale.set(session.scaleName, session);
-        }
-    }
-
-    // current run
-    const currentRunStartedAt = selectedPlan?.currentRunStartedAt
-        ? Date.parse(selectedPlan.currentRunStartedAt)
-        : null;
-
-    const completedScaleNames = Array.from(
-        latestSessionByScale.values()
-    )
-        .filter((session) => session.success)
-        .map((session) => session.scaleName);
-
 
     const completedCount = selectedPlan
         ? selectedPlan.scales.filter((scaleName) =>
@@ -157,6 +72,47 @@ export default function Plans() {
             ? 0
             : Math.round((completedCount / totalScales) * 100);
 
+    /* ---------------------------------- */
+    // Effects
+    /* ---------------------------------- */
+
+    // Select the first plan when plans initially load. Preserve the 
+    // user's selection if that plan still exists.
+    useEffect(() => {
+        setSelectedPlanId((currentPlanId) => {
+            const currentPlanStillExists = plans.some(
+                (plan) => plan.id === currentPlanId
+            );
+
+            return currentPlanStillExists
+                ? currentPlanId
+                : plans[0]?.id ?? null;
+        });
+    }, [plans]);
+
+    /* ---------------------------------- */
+    // Event handlers
+    /* ---------------------------------- */
+
+    // Create plan handler
+    async function handleCreatePlan(draft: PlanDraft) {
+        const newPlan = await createPlan(draft);
+
+        setSelectedPlanId(newPlan.id);
+        setShowCreatePlanModal(false);
+    }
+
+    // Edit plan handler
+    async function handleEditPlan(draft: PlanDraft) {
+        if (!editingPlan) {
+            return;
+        }
+
+        await updatePlan(editingPlan.id, draft);
+        setEditingPlan(null);
+    }
+
+    // Restart plan handler
     async function handleRestartPlan() {
         if (!selectedPlan) {
             return;
@@ -166,42 +122,10 @@ export default function Plans() {
         setActionError(null);
 
         try {
-            const response = await fetch(`/api/plans/${selectedPlan.id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ action: "restart", }),
-            });
+            await restartPlan(selectedPlan.id);
 
-            if (!response.ok) {
-                throw new Error(
-                    await getErrorMessage(
-                        response,
-                        "Could not restart plan."
-                    )
-                );
-            }
-
-            const updatedPlan: Plan = await response.json();
-
-            // update screen immediately
-            setPlans((currentPlans) =>
-                currentPlans.map((plan) =>
-                    plan.id === updatedPlan.id
-                        ? updatedPlan
-                        : plan
-                )
-            );
-
-            // match UI state to the practice-session rows, restart endpoint in supabase
-            setPracticeSessions((currentSessions) =>
-                currentSessions.map((session) =>
-                    updatedPlan.scales.includes(session.scaleName)
-                        ? { ...session, success: false }
-                        : session
-                )
-            );
+            // Restart resets matching practice-session success values in Supabase
+            await loadPracticeSessions();
         } catch (error) {
             setActionError(
                 error instanceof Error
@@ -211,70 +135,6 @@ export default function Plans() {
         } finally {
             setIsRestarting(false);
         }
-    }
-
-    async function handleCreatePlan(draft: PlanDraft) {
-        const response = await fetch("/api/plans", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(draft),
-        });
-
-        if (!response.ok) {
-            throw new Error(
-                await getErrorMessage(
-                    response,
-                    "Could not create plan."
-                )
-            )
-        }
-        const newPlan: Plan = await response.json();
-
-
-        // update screen immediately
-        setPlans((currentPlans) => [...currentPlans, newPlan]);
-        setSelectedPlanId(newPlan.id);
-        setShowCreatePlanModal(false);
-    }
-
-    async function handleEditPlan(draft: PlanDraft) {
-        if (!editingPlan) {
-            return;
-        }
-
-        const response = await fetch(
-            `/api/plans/${editingPlan.id}`,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(draft),
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error(
-                await getErrorMessage(
-                    response,
-                    "Could not update plan."
-                )
-            )
-        }
-        const updatedPlan: Plan = await response.json();
-
-
-        // update screen immediately
-        setPlans((currentPlans) =>
-            currentPlans.map((plan) =>
-                plan.id === updatedPlan.id
-                    ? updatedPlan
-                    : plan
-            )
-        );
-        setEditingPlan(null);
     }
 
     // Delete handler
@@ -292,31 +152,7 @@ export default function Plans() {
         setIsDeleting(true);
         setActionError(null);
         try {
-            const response = await fetch(
-                `/api/plans/${selectedPlan.id}`,
-                {
-                    method: "DELETE"
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error(
-                    await getErrorMessage(
-                        response,
-                        "Could not delete plan."
-                    )
-                );
-            }
-            const remainingPlans = plans.filter(
-                (plan) => plan.id !== selectedPlan.id
-            );
-
-
-
-
-            // update screen immediately
-            setPlans(remainingPlans);
-            setSelectedPlanId(remainingPlans[0]?.id ?? null);
+            await deletePlan(selectedPlan.id);
         } catch (error) {
             setActionError(
                 error instanceof Error
@@ -329,6 +165,9 @@ export default function Plans() {
 
     }
 
+    /* ---------------------------------- */
+    // Rendering
+    /* ---------------------------------- */
     return (
         <div>
             <main>
@@ -356,7 +195,10 @@ export default function Plans() {
                         <p>{loadError}</p>
                         <button
                             type="button"
-                            onClick={() => void loadPlans()}
+                            onClick={() => {
+                                void loadPlans();
+                                void loadPracticeSessions();
+                            }}
                         >
                             Try again
                         </button>
