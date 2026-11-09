@@ -2,10 +2,12 @@
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 import { CreatePlanModal } from "@/components/plans/CreatePlanModal";
-import Link from "next/link";
 import { usePlansApi } from "@/hooks/usePlansApi";
 import { usePracticeSessions } from "@/hooks/usePracticeSessions";
 import type { Plan, PlanDraft } from "@/types/plan";
+import { PlanSelector } from "@/components/plans/PlanSelector";
+import { handler } from "next/dist/build/templates/app-route";
+import { PlanDetails } from "@/components/plans/PlanDetails";
 
 
 export default function Plans() {
@@ -213,112 +215,23 @@ export default function Plans() {
 
                 {!isLoading && !loadError && selectedPlan && (
                     <div className={styles.planWorkspace}>
-                        <nav className={styles.planList}>
-
-
-                            {plans.map((plan) => (
-                                <button
-                                    className={
-                                        plan.id === selectedPlanId
-                                            ? `${styles.planListItem} ${styles.isSelected}`
-                                            : styles.planListItem
-                                    }
-                                    type="button"
-                                    key={plan.id}
-                                    aria-pressed={plan.id === selectedPlanId}
-                                    onClick={() => setSelectedPlanId(plan.id)} // CHANGE to an OnClick method
-                                >
-                                    {plan.name}
-                                </button>
-                            ))}
-                        </nav>
-
-                        <div>
-                            <label className={styles.planSelector} htmlFor="plan">
-                                <h2>Choose a plan</h2>
-                                <select
-                                    id="plan"
-                                    value={selectedPlanId ?? ""}
-                                    onChange={(event) => setSelectedPlanId(event.target.value)}
-                                >
-                                    {plans.map((plan) => (
-                                        <option key={plan.id} value={plan.id}>
-                                            {plan.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-
-                            {actionError && (
-                                <p role="alert">
-                                    {actionError}
-                                </p>
-                            )}
-                            {/* CHANGE: Componentize this  */}
-                            <div className={styles.planProgress} aria-labelledby="plan-progress-heading">
-                                <h3 id="plan-progress-heading">Plan progress</h3>
-
-                                <progress
-                                    className={styles.progressBar}
-                                    value={completedCount}
-                                    max={totalScales}
-                                >
-                                    {progressPercent}%
-                                </progress>
-
-                                <p>
-                                    {completedCount} of {totalScales} scales completed ({progressPercent}%)
-                                </p>
-                            </div>
-
-                            <div className={styles.planActions}>
-                                <Link
-                                    className={styles.practicePlanLink}
-                                    href={`/practice?plan=${selectedPlan.id}`}
-                                >
-                                    Practice this plan
-                                </Link>
-
-                                <button
-                                    className={styles.restartPlanButton}
-                                    type="button"
-                                    disabled={isRestarting}
-                                    onClick={handleRestartPlan}
-                                >
-                                    {isRestarting
-                                        ? "Restarting..."
-                                        : "Restart progress"}
-                                </button>
-
-                                <button
-                                    className={styles.restartPlanButton}
-                                    type="button"
-                                    onClick={() => setEditingPlan(selectedPlan)}
-                                >
-                                    Edit plan
-                                </button>
-
-                                <button
-                                    className={styles.restartPlanButton}
-                                    type="button"
-                                    disabled={isDeleting}
-                                    onClick={() => void handleDeletePlan()}
-                                >
-                                    {isDeleting ? "Deleting..." : "Delete plan"}
-                                </button>
-                            </div>
-
-                            <section className={styles.planContent}>
-                                <h2 id="plan-title">{selectedPlan.name}</h2>
-                                <p>{selectedPlan.description}</p>
-                                <h3> Scales in this plan</h3>
-                                <ul>
-                                    {selectedPlan.scales.map((scale) => (
-                                        <li key={scale}>{scale}</li>
-                                    ))}
-                                </ul>
-                            </section>
-                        </div>
+                        <PlanSelector
+                            plans={plans}
+                            selectedPlanId={selectedPlanId ?? ""}
+                            onPlanChange={setSelectedPlanId}
+                        />
+                        <PlanDetails
+                            plan={selectedPlan}
+                            completedCount={completedCount}
+                            totalScales={totalScales}
+                            progressPercent={progressPercent}
+                            actionError={actionError}
+                            isRestarting={isRestarting}
+                            isDeleting={isDeleting}
+                            onRestart={handleRestartPlan}
+                            onEdit={() => setEditingPlan(selectedPlan)}
+                            onDelete={handleDeletePlan}
+                        />
                     </div>
                 )}
             </main >
@@ -344,7 +257,5 @@ export default function Plans() {
                 onSave={handleEditPlan}
             />
         </div >
-
-
     );
 }
