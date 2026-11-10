@@ -1,6 +1,28 @@
+"use client";
+
 import Card from "@/components/Card";
+import { usePracticeSessions } from "@/hooks/usePracticeSessions";
 
 export default function Progress() {
+    const {
+        practiceSessions,
+        isSessionsLoading,
+        sessionsError,
+        loadPracticeSessions
+    } = usePracticeSessions();
+
+    // Sunday is the first day of the week
+    const startOfWeek = new Date();
+    startOfWeek.setHours(0, 0, 0, 0);
+    startOfWeek.setDate(
+        startOfWeek.getDate() - startOfWeek.getDay()
+    );
+    const sessionsThisWeek = practiceSessions.filter((session) => {
+        const practicedAt = new Date(session.practicedAt);
+
+        return practicedAt >= startOfWeek;
+    }).length;
+
     return (
         <div className="background">
             <main>
@@ -11,21 +33,39 @@ export default function Progress() {
                         className="profile-summary"
                         aria-labelledby="profile-heading"
                     >
-                        <h2 id="profile-heading">Welcome Bob!</h2>
-                        <p>  Email: bob@example.com </p>
+                        <h2 id="profile-heading">Welcome back!</h2>
                     </section>
 
                     <section aria-labelledby="summary-heading">
                         <h2 id="summary-heading">Summary</h2>
                         <div className="progress-cards">
                             <Card title="Sessions this week" >
-                                <p>5</p>
+                                {isSessionsLoading && (
+                                    <p>Loading...</p>
+                                )}
+                                {sessionsError && (
+                                    <>
+                                        <p>Could not load sessions.</p>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                void loadPracticeSessions()
+                                            }
+                                        >
+                                            Try again
+                                        </button>
+                                    </>
+                                )}
+
+                                {!isSessionsLoading && !sessionsError && (
+                                    <p>{sessionsThisWeek}</p>
+                                )}
                             </Card>
                             <Card title="Most practiced">
-                                <p>A Major</p>
+                                <p>....</p>
                             </Card>
                             <Card title="Fastest Tempo">
-                                <p>96 bpm</p>
+                                <p>...</p>
                             </Card>
                         </div>
                     </section>

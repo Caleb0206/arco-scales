@@ -123,6 +123,7 @@ export function usePlansApi() {
         return updatePlan;
     }
 
+    // PATCH: Restart a plan.
     async function restartPlan(planId: string) {
         const response = await fetch(`/api/plans/${planId}`, {
             method: "PATCH",
