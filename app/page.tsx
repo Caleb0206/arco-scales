@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Card from "@/components/Card";
 import { scales } from "@/data/scales";
-import { usePlans } from "@/context/PlansContext";
+import { usePracticeSessions } from "@/hooks/usePracticeSessions";
 
 export default function Home() {
-  const { completedScaleNames } = usePlans();
+  const { practiceSessions } = usePracticeSessions();
+
+  const practicedScaleNames = new Set(
+    practiceSessions.map((session) => session.scaleName)
+  );
 
   const practicedScales = scales.filter((scale) =>
-    completedScaleNames.includes(scale.name)
+    practicedScaleNames.has(scale.name)
   );
 
   const [randomScaleHref, setRandomScaleHref] = useState("/scales");
@@ -26,7 +29,7 @@ export default function Home() {
     setRandomScaleHref(
       `/practice?scale=${encodeURIComponent(randomScale.name)}`
     );
-  }, [completedScaleNames]);
+  }, [practiceSessions]);
 
 
   return (

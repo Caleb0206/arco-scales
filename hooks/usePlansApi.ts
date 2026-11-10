@@ -18,10 +18,6 @@ export function usePlansApi() {
         setPlansError(null);
 
         try {
-            // const [plansResponse, sessionsResponse] = await Promise.all([
-            //     fetch("/api/plans"),
-            //     fetch("/api/practice-sessions"),
-            // ]);
             const response = await fetch ("/api/plans");
 
             if (!response.ok) {
@@ -32,15 +28,6 @@ export function usePlansApi() {
                     )
                 );
             }
-
-            // if (!sessionsResponse.ok) {
-            //     throw new Error(
-            //         await getErrorMessage(
-            //             sessionsResponse,
-            //             "Could not load practice history."
-            //         )
-            //     );
-            // }
 
             const loadedPlans: Plan[] = await response.json();
 
