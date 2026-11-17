@@ -6,8 +6,9 @@ import { usePlansApi } from "@/hooks/usePlansApi";
 import { usePracticeSessions } from "@/hooks/usePracticeSessions";
 import type { Plan, PlanDraft } from "@/types/plan";
 import { PlanSelector } from "@/components/plans/PlanSelector";
-import { handler } from "next/dist/build/templates/app-route";
 import { PlanDetails } from "@/components/plans/PlanDetails";
+import { PlanProgress } from "@/components/plans/PlanProgress";
+import { PlanActions } from "@/components/plans/PlanActions";
 
 
 export default function Plans() {
@@ -222,15 +223,26 @@ export default function Plans() {
                         />
                         <PlanDetails
                             plan={selectedPlan}
-                            completedCount={completedCount}
-                            totalScales={totalScales}
-                            progressPercent={progressPercent}
-                            actionError={actionError}
-                            isRestarting={isRestarting}
-                            isDeleting={isDeleting}
-                            onRestart={handleRestartPlan}
-                            onEdit={() => setEditingPlan(selectedPlan)}
-                            onDelete={handleDeletePlan}
+                            errorSlot={
+                                actionError ? <p role = "alert">{actionError}</p> : null
+                            }
+                            progressSlot={
+                                <PlanProgress 
+                                    completedCount={completedCount}
+                                    totalScales={totalScales}
+                                    progressPercent={progressPercent}
+                                />
+                            }
+                            actionsSlot={
+                                <PlanActions 
+                                    planId={selectedPlan.id}
+                                    isRestarting={isRestarting}
+                                    isDeleting={isDeleting}
+                                    onRestart={handleRestartPlan}
+                                    onEdit={() => setEditingPlan(selectedPlan)}
+                                    onDelete={handleDeletePlan}
+                                />
+                            }
                         />
                     </div>
                 )}

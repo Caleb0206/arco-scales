@@ -17,8 +17,6 @@ export function PlanSelector({
     return (
         <>
             <nav className={styles.planList}>
-
-
                 {plans.map((plan) => (
                     <button
                         className={
